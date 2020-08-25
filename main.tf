@@ -1,3 +1,16 @@
+locals{
+    server_properties = {
+      "auto.create.topics.enable" = true
+      "log.retention.hours" = -1
+      "default.replication.factor" = 3
+      "min.insync.replicas" = 2
+      "num.io.threads" = 8
+      "num.network.threads" = 5
+      "num.partitions" = 10
+    }
+}
+
+
 module "label" {
   source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
   enabled     = var.enabled
@@ -53,14 +66,18 @@ resource "aws_security_group_rule" "egress" {
 }
 
 resource "random_id" "config_id" {
-  count             = var.enabled ? 1 : 0
-  byte_length = 2
+  count       = var.enabled ? 1 : 0
+  byte_length = 3
 }
 
-resource aws_msk_configuration config {
-  count             = var.enabled ? 1 : 0
-  kafka_versions = ["2.3.1", "2.4.1"]
+resource "aws_msk_configuration" "config" {
+  count          = var.enabled ? 1 : 0
+  kafka_versions = [var.kafka_version]
   name           = "${module.label.id}-${random_id.config_id[0].hex}"
+  description    = "Manages an Amazon Managed Streaming for Kafka configuration"
+
+  //server_properties =  tostr(local.server_properties)
+
 
   server_properties = <<PROPERTIES
     auto.create.topics.enable = true
@@ -73,11 +90,12 @@ resource aws_msk_configuration config {
   PROPERTIES
 }
 
-resource aws_msk_cluster default {
+resource "aws_msk_cluster" "default" {
   count                  = var.enabled ? 1 : 0
   cluster_name           = module.label.id
   kafka_version          = var.kafka_version
   number_of_broker_nodes = var.number_of_broker_nodes
+  enhanced_monitoring    = var.enhanced_monitoring
 
   broker_node_group_info {
     instance_type   = var.broker_instance_type
@@ -93,7 +111,44 @@ resource aws_msk_cluster default {
 
   encryption_info {
     encryption_in_transit {
-      client_broker = "PLAINTEXT"
+      client_broker = var.client_broker
+      in_cluster    = var.encryption_in_cluster
+    }
+    encryption_at_rest_kms_key_arn = var.encryption_at_rest_kms_key_arn
+  }
+
+  client_authentication {
+    tls {
+      certificate_authority_arns = var.certificate_authority_arns
+    }
+  }
+
+  open_monitoring {
+    prometheus {
+      jmx_exporter {
+        enabled_in_broker = var.jmx_exporter_enabled
+      }
+      node_exporter {
+        enabled_in_broker = var.node_exporter_enabled
+      }
+    }
+  }
+
+  logging_info {
+    broker_logs {
+      cloudwatch_logs {
+        enabled = var.cloudwatch_logs_enabled
+        log_group = var.cloudwatch_logs_log_group
+      }
+      firehose {
+        enabled = var.firehose_logs_enabled
+        delivery_stream = var.firehose_delivery_stream
+      }
+      s3 {
+        enabled = var.s3_logs_enabled
+        bucket = var.s3_logs_bucket
+        prefix = var.s3_logs_prefix
+      }
     }
   }
 
@@ -101,12 +156,12 @@ resource aws_msk_cluster default {
 }
 
 module "hostname" {
-  count   = var.enabled && var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
+  count = var.enabled && var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
 
   source = "../terraform-aws-route53-cluster-hostname"
 
   enabled = var.enabled
-  name    = "${module.label.id}-broker-${count.index+1}"
+  name    = "${module.label.id}-broker-${count.index + 1}"
   zone_id = var.zone_id
-  records = [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]]
+  records = length(aws_msk_cluster.default[0].bootstrap_brokers) > 0 ? [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]] : [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers_tls))[count.index])[0]]
 }

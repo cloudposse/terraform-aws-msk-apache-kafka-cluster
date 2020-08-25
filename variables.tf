@@ -1,35 +1,32 @@
-variable "example" {
-  description = "Example variable"
-  default     = "hello world"
-}
-
-
-variable number_of_broker_nodes {
+variable "number_of_broker_nodes" {
   type    = number
-  default = 3
+  description = "The desired total number of broker nodes in the kafka cluster. It must be a multiple of the number of specified client subnets. It must be a multiple of the number of specified client subnets."
 }
 
-variable kafka_version {
+variable "kafka_version" {
   type    = string
-  default = "2.4.1"
+  description = "Specify the desired Kafka software version"
 }
 
-variable broker_instance_type {
+variable "broker_instance_type" {
   type    = string
-  default = "kafka.m5.large"
+  description = "Specify the instance type to use for the kafka brokers"
 }
 
-variable broker_volume_size {
+variable "broker_volume_size" {
   type    = number
   default = 1000
+  description = "The size in GiB of the EBS volume for the data drive on each broker node"
 }
 
-variable vpc_id {
+variable "vpc_id" {
   type = string
+  description = "VPC ID where subnets will be created (e.g. `vpc-aceb2723`)"
 }
 
-variable subnet_ids {
+variable "subnet_ids" {
   type = list(string)
+  description = "Subnet IDs"
 }
 
 variable "enabled" {
@@ -39,15 +36,20 @@ variable "enabled" {
 }
 
 variable "namespace" {
-  type = string
+  type        = string
+  default     = ""
+  description = "Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'"
 }
 
 variable "name" {
-  type = string
+  type        = string
+  default     = ""
+  description = "Solution name, e.g. 'app' or 'cluster'"
 }
 
 variable "zone_id" {
   type = string
+  description = "Route53 DNS Zone ID"
 }
 
 variable "stage" {
@@ -98,8 +100,88 @@ variable "allowed_cidr_blocks" {
   description = "List of CIDR blocks to be allowed to connect to the cluster"
 }
 
-variable "kafka_topics" {
-  type        = list(string)
-  default     = []
-  description = "List of Kafka topics to be created"
+variable "client_broker" {
+  type         = string
+  default      = "TLS"
+  description = "Encryption setting for data in transit between clients and brokers"
 }
+
+variable "encryption_in_cluster" {
+  type = bool
+  default = true
+  description = "Whether data communication among broker nodes is encrypted"
+}
+
+variable "encryption_at_rest_kms_key_arn" {
+  type = string
+  default = ""
+  description = "You may specify a KMS key short ID or ARN (it will always output an ARN) to use for encrypting your data at rest"
+}
+
+variable "enhanced_monitoring" {
+  type        = string
+  default     = "DEFAULT"
+  description = "Specify the desired enhanced MSK CloudWatch monitoring level"
+}
+
+variable "certificate_authority_arns" {
+  type = list(string)
+  default = []
+  description = "List of ACM Certificate Authority Amazon Resource Names (ARNs)"
+}
+
+variable "jmx_exporter_enabled" {
+  type = bool
+  default = false
+  description = "Indicates whether you want to enable or disable the JMX Exporter"
+}
+
+variable "node_exporter_enabled" {
+  type = bool
+  default = false
+  description = "Indicates whether you want to enable or disable the Node Exporter"
+}
+
+variable "cloudwatch_logs_enabled" {
+  type = bool
+  default = false
+  description = "Indicates whether you want to enable or disable streaming broker logs to Cloudwatch Logs"
+}
+
+variable "cloudwatch_logs_log_group" {
+  type = string
+  default = ""
+  description = "Name of the Cloudwatch Log Group to deliver logs to"
+}
+
+variable "firehose_logs_enabled" {
+  type = bool
+  default = false
+  description = "Indicates whether you want to enable or disable streaming broker logs to Kinesis Data Firehose"
+}
+
+variable "firehose_delivery_stream" {
+  type = string
+  default = ""
+  description = "Name of the Kinesis Data Firehose delivery stream to deliver logs to"
+}
+
+variable "s3_logs_enabled" {
+  type = bool
+  default = false
+  description = " Indicates whether you want to enable or disable streaming broker logs to S3"
+}
+
+variable "s3_logs_bucket" {
+  type = string
+  default = ""
+  description = "Name of the S3 bucket to deliver logs to"
+}
+
+variable "s3_logs_prefix" {
+  type = string
+  default = ""
+  description = "Prefix to append to the folder name"
+}
+
+
