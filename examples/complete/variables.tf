@@ -59,7 +59,7 @@ variable "availability_zones" {
 
 variable "zone_id" {
   type        = string
-  description = "Use for DNS Hostnames for MSK Brokers"
+  description = "ZoneID for DNS Hostnames of MSK Brokers"
 }
 
 variable "kafka_version" {
