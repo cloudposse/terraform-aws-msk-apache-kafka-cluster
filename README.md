@@ -74,11 +74,6 @@ Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest re
 Here's how to invoke this example module in your projects
 
 ```hcl
-module "example" {
-  source = "https://github.com/cloudposse/terraform-example-module.git?ref=master"
-  example = "Hello world!"
-}
-
 module "kafka" {
   source                 = "https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster.git?ref=master"
   namespace              = "eg"
