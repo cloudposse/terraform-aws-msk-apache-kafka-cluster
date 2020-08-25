@@ -4,6 +4,6 @@ terraform {
   required_providers {
     local  = "~> 1.2"
     random = "~> 2.2"
-    aws    = "~> 3.0"
+    aws    = ">= 2.0, < 4.0"
   }
 }

@@ -20,13 +20,13 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = var.enabled ? length(var.security_groups) : 0
+  for_each                 = var.enabled ? toset(var.security_groups) : []
   description              = "Allow inbound traffic from Security Groups"
   type                     = "ingress"
   from_port                = 0
   to_port                  = 65535
   protocol                 = "tcp"
-  source_security_group_id = var.security_groups[count.index]
+  source_security_group_id = each.value
   security_group_id        = join("", aws_security_group.default.*.id)
 }
 
@@ -52,26 +52,13 @@ resource "aws_security_group_rule" "egress" {
   security_group_id = join("", aws_security_group.default.*.id)
 }
 
-resource "random_id" "config_id" {
-  count       = var.enabled ? 1 : 0
-  byte_length = 3
-}
-
 resource "aws_msk_configuration" "config" {
   count          = var.enabled ? 1 : 0
   kafka_versions = [var.kafka_version]
-  name           = "${module.label.id}-${random_id.config_id[0].hex}"
+  name           = module.label.id
   description    = "Manages an Amazon Managed Streaming for Kafka configuration"
 
-  server_properties = <<PROPERTIES
-    auto.create.topics.enable = true
-    log.retention.hours = -1
-    default.replication.factor = 3
-    min.insync.replicas = 2
-    num.io.threads = 8
-    num.network.threads = 5
-    num.partitions = 10
-  PROPERTIES
+  server_properties = join("\n", [for k in keys(var.properties) : format("%s = %s", k, var.properties[k])])
 }
 
 resource "aws_msk_cluster" "default" {
@@ -139,12 +126,12 @@ resource "aws_msk_cluster" "default" {
   tags = module.label.tags
 }
 
-module "hostname" {
-  count = var.enabled && var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
-  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
-
-  enabled = var.enabled
-  name    = "${module.label.id}-broker-${count.index + 1}"
-  zone_id = var.zone_id
-  records = length(aws_msk_cluster.default[0].bootstrap_brokers) > 0 ? [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]] : [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers_tls))[count.index])[0]]
-}
+//module "hostname" {
+//  count = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
+//  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
+//
+//  enabled = var.enabled
+//  name    = "${module.label.id}-broker-${count.index + 1}"
+//  zone_id = var.zone_id
+//  records = length(aws_msk_cluster.default[0].bootstrap_brokers) > 0 ? [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]] : [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers_tls))[count.index])[0]]
+//}

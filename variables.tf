@@ -5,12 +5,12 @@ variable "number_of_broker_nodes" {
 
 variable "kafka_version" {
   type    = string
-  description = "Specify the desired Kafka software version"
+  description = "The desired Kafka software version"
 }
 
 variable "broker_instance_type" {
   type    = string
-  description = "Specify the instance type to use for the kafka brokers"
+  description = "The instance type to use for the Kafka brokers"
 }
 
 variable "broker_volume_size" {
@@ -133,13 +133,13 @@ variable "certificate_authority_arns" {
 variable "jmx_exporter_enabled" {
   type = bool
   default = false
-  description = "Indicates whether you want to enable or disable the JMX Exporter"
+  description = "Set `true` to enable the JMX Exporter"
 }
 
 variable "node_exporter_enabled" {
   type = bool
   default = false
-  description = "Indicates whether you want to enable or disable the Node Exporter"
+  description = "Set `true` to enable the Node Exporter"
 }
 
 variable "cloudwatch_logs_enabled" {
@@ -181,7 +181,13 @@ variable "s3_logs_bucket" {
 variable "s3_logs_prefix" {
   type = string
   default = ""
-  description = "Prefix to append to the folder name"
+  description = "Prefix to append to the S3 folder name logs are delivered to"
+}
+
+variable "properties" {
+  type = map(string)
+  default = {}
+  description = "Contents of the server.properties file. Supported properties are documented in the [MSK Developer Guide](https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html)"
 }
 
 

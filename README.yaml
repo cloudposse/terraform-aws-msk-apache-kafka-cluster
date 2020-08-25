@@ -25,8 +25,8 @@ github_repo: cloudposse/terraform-aws-msk-apache-kafka-cluster
 # Badges to display
 badges:
   - name: "Latest Release"
-    image: "https://img.shields.io/github/release/cloudposse/terraform-example-module.svg"
-    url: "https://github.com/cloudposse/terraform-example-module/releases/latest"
+    image: "https://img.shields.io/github/release/cloudposse/terraform-aws-msk-apache-kafka-cluster.svg"
+    url: "https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster/releases/latest"
   - name: "Slack Community"
     image: "https://slack.cloudposse.com/badge.svg"
     url: "https://slack.cloudposse.com"
@@ -63,7 +63,7 @@ references:
 
 # Short description of this project
 description: |-
-  This is `terraform-aws-msk-apache-kafka-cluster` to provision AWS MSK.
+  Terraform module to provision [Amazon Managed Streaming] (https://aws.amazon.com/msk/) for [Apache Kafka] (https://aws.amazon.com/msk/what-is-kafka/)
 
   __Note:__ this module is intended for use with an existing VPC.
     To create a new VPC, use [terraform-aws-vpc](https://github.com/cloudposse/terraform-aws-vpc) module.

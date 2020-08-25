@@ -19,6 +19,10 @@ module "subnets" {
   nat_instance_enabled = false
 }
 
+resource "random_id" "config_id" {
+  byte_length = 3
+}
+
 module "kafka" {
   source                 = "../../"
   namespace              = var.namespace
