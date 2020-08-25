@@ -8,7 +8,7 @@ output "config_arn" {
   value       = module.kafka.config_arn
 }
 
-//output "hostname" {
-//  description = "DNS hostname of MSK cluster"
-//  value       = module.kafka.hostname
-//}
+output "hostname" {
+  description = "DNS hostname of MSK cluster"
+  value       = module.kafka.hostname
+}

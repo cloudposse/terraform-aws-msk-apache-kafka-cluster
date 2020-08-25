@@ -2,13 +2,13 @@ module "label" {
   source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
   enabled     = var.enabled
   namespace   = var.namespace
-  name        = var.name
-  stage       = var.stage
   environment = var.environment
+  stage       = var.stage
+  name        = var.name
   delimiter   = var.delimiter
   attributes  = var.attributes
-  label_order = var.label_order
   tags        = var.tags
+  label_order = var.label_order
 }
 
 resource "aws_security_group" "default" {
@@ -108,17 +108,17 @@ resource "aws_msk_cluster" "default" {
   logging_info {
     broker_logs {
       cloudwatch_logs {
-        enabled = var.cloudwatch_logs_enabled
+        enabled   = var.cloudwatch_logs_enabled
         log_group = var.cloudwatch_logs_log_group
       }
       firehose {
-        enabled = var.firehose_logs_enabled
+        enabled         = var.firehose_logs_enabled
         delivery_stream = var.firehose_delivery_stream
       }
       s3 {
         enabled = var.s3_logs_enabled
-        bucket = var.s3_logs_bucket
-        prefix = var.s3_logs_prefix
+        bucket  = var.s3_logs_bucket
+        prefix  = var.s3_logs_prefix
       }
     }
   }
@@ -126,12 +126,17 @@ resource "aws_msk_cluster" "default" {
   tags = module.label.tags
 }
 
-//module "hostname" {
-//  count = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
-//  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
-//
-//  enabled = var.enabled
-//  name    = "${module.label.id}-broker-${count.index + 1}"
-//  zone_id = var.zone_id
-//  records = length(aws_msk_cluster.default[0].bootstrap_brokers) > 0 ? [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]] : [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers_tls))[count.index])[0]]
-//}
+module "hostname" {
+  count       = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
+  source      = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
+  enabled     = var.enabled
+  namespace   = var.namespace
+  environment = var.environment
+  stage       = var.stage
+  name        = "${module.label.id}-broker-${count.index + 1}"
+  delimiter   = var.delimiter
+  attributes  = var.attributes
+  tags        = var.tags
+  zone_id     = var.zone_id
+  records     = length(aws_msk_cluster.default[0].bootstrap_brokers) > 0 ? [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]] : [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers_tls))[count.index])[0]]
+}
