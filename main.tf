@@ -1,16 +1,3 @@
-locals{
-    server_properties = {
-      "auto.create.topics.enable" = true
-      "log.retention.hours" = -1
-      "default.replication.factor" = 3
-      "min.insync.replicas" = 2
-      "num.io.threads" = 8
-      "num.network.threads" = 5
-      "num.partitions" = 10
-    }
-}
-
-
 module "label" {
   source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
   enabled     = var.enabled
@@ -75,9 +62,6 @@ resource "aws_msk_configuration" "config" {
   kafka_versions = [var.kafka_version]
   name           = "${module.label.id}-${random_id.config_id[0].hex}"
   description    = "Manages an Amazon Managed Streaming for Kafka configuration"
-
-  //server_properties =  tostr(local.server_properties)
-
 
   server_properties = <<PROPERTIES
     auto.create.topics.enable = true
@@ -157,8 +141,7 @@ resource "aws_msk_cluster" "default" {
 
 module "hostname" {
   count = var.enabled && var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
-
-  source = "../terraform-aws-route53-cluster-hostname"
+  source = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
 
   enabled = var.enabled
   name    = "${module.label.id}-broker-${count.index + 1}"

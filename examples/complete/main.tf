@@ -1,5 +1,5 @@
 module "vpc" {
-  source     = "../modules/terraform-aws-vpc"
+  source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.16.1"
   namespace  = var.namespace
   stage      = var.stage
   name       = var.name
@@ -7,7 +7,7 @@ module "vpc" {
 }
 
 module "subnets" {
-  source               = "../modules/terraform-aws-dynamic-subnets"
+  source               = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.27.0"
   availability_zones   = var.availability_zones
   namespace            = var.namespace
   stage                = var.stage
@@ -20,7 +20,7 @@ module "subnets" {
 }
 
 module "kafka" {
-  source                 = "../modules/terraform-aws-msk-apache-kafka-cluster"
+  source                 = "../../"
   namespace              = var.namespace
   stage                  = var.stage
   name                   = var.name
