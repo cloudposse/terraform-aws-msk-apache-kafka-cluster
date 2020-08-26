@@ -59,6 +59,7 @@
 | bootstrap\_broker\_tls | A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity to the kafka cluster |
 | bootstrap\_brokers | A comma separated list of one or more hostname:port pairs of kafka brokers suitable to boostrap connectivity to the kafka cluster |
 | cluster\_arn | Amazon Resource Name (ARN) of the MSK cluster |
+| cluster\_name | MSK Cluster name |
 | config\_arn | Amazon Resource Name (ARN) of the configuration |
 | current\_version | Current version of the MSK Cluster used for updates |
 | hostname | MSK Cluster Broker DNS hostname |
