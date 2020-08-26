@@ -28,7 +28,7 @@ func TestExamplesComplete(t *testing.T) {
 	outputClusterArn := terraform.Output(t, terraformOptions, "cluster_arn")
 
 	// Verify we're getting back the outputs we expect
-	assert.Regexp(t, "arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?", outputClusterArn)
+	assert.Regexp(t, "arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?", outputClusterArn) //nolint
 
 	// Run `terraform output` to get the value of an output variable
 	outputSecurityGroupName := terraform.Output(t, terraformOptions, "security_group_name")
