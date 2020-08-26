@@ -15,7 +15,7 @@ jobs:
           reaction-token: ${{ secrets.GITHUB_TOKEN }}
           repository: cloudposse/actions
           commands: rebuild-readme, terraform-fmt
-          permission: triage
+          permission: none
           issue-type: pull-request
 
   test:
@@ -30,7 +30,7 @@ jobs:
           reaction-token: ${{ secrets.GITHUB_TOKEN }}
           repository: cloudposse/actions
           commands: test
-          permission: triage
+          permission: none
           issue-type: pull-request
           reactions: false
 
