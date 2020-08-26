@@ -115,7 +115,7 @@ Available targets:
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.0, < 0.14.0 |
+| terraform | >= 0.13.0, < 0.14.0 |
 | aws | >= 2.0, < 4.0 |
 | local | ~> 1.2 |
 | random | ~> 2.2 |
@@ -136,6 +136,7 @@ Available targets:
 | broker\_volume\_size | The size in GiB of the EBS volume for the data drive on each broker node | `number` | `1000` | no |
 | certificate\_authority\_arns | List of ACM Certificate Authority Amazon Resource Names (ARNs) to be used for TLS client authentication | `list(string)` | `[]` | no |
 | client\_broker | Encryption setting for data in transit between clients and brokers. Valid values: `TLS`, `TLS_PLAINTEXT`, and `PLAINTEXT` | `string` | `"TLS"` | no |
+| client\_tls\_auth\_enabled | Set `true` to enable the Client TLS Authentication | `bool` | `false` | no |
 | cloudwatch\_logs\_enabled | Indicates whether you want to enable or disable streaming broker logs to Cloudwatch Logs | `bool` | `false` | no |
 | cloudwatch\_logs\_log\_group | Name of the Cloudwatch Log Group to deliver logs to | `string` | `""` | no |
 | delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes` | `string` | `"-"` | no |
@@ -176,6 +177,7 @@ Available targets:
 | hostname | MSK Cluster Broker DNS hostname |
 | latest\_revision | Latest revision of the configuration |
 | security\_group\_id | The ID of the security group rule |
+| security\_group\_name | The name of the security group rule |
 | zookeeper\_connect\_string | A comma separated list of one or more hostname:port pairs to use to connect to the Apache Zookeeper cluster |
 
 
