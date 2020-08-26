@@ -10,7 +10,7 @@ name = "msk-test"
 
 delimiter = "-"
 
-zone_id = "Z0000XXXXXXXXX"
+zone_id = "Z3SO0TKDDQ0RGG"
 
 availability_zones = ["us-east-2a", "us-east-2b", "us-east-2c"]
 

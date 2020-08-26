@@ -130,6 +130,12 @@ variable "certificate_authority_arns" {
   description = "List of ACM Certificate Authority Amazon Resource Names (ARNs) to be used for TLS client authentication"
 }
 
+variable "client_tls_auth_enabled" {
+  type = bool
+  default = false
+  description = "Set `true` to enable the Client TLS Authentication"
+}
+
 variable "jmx_exporter_enabled" {
   type        = bool
   default     = false

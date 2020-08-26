@@ -20,13 +20,13 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  for_each                 = var.enabled ? toset(var.security_groups) : []
+  count                 = var.enabled ? length(var.security_groups) : 0
   description              = "Allow inbound traffic from Security Groups"
   type                     = "ingress"
   from_port                = 0
   to_port                  = 65535
   protocol                 = "tcp"
-  source_security_group_id = each.value
+  source_security_group_id = var.security_groups[count.index]
   security_group_id        = join("", aws_security_group.default.*.id)
 }
 
@@ -88,9 +88,13 @@ resource "aws_msk_cluster" "default" {
     encryption_at_rest_kms_key_arn = var.encryption_at_rest_kms_key_arn
   }
 
-  client_authentication {
-    tls {
-      certificate_authority_arns = var.certificate_authority_arns
+  dynamic "client_authentication" {
+    for_each = var.client_tls_auth_enabled ? [1] : []
+
+    content {
+      tls {
+        certificate_authority_arns = var.certificate_authority_arns
+      }
     }
   }
 
@@ -129,14 +133,8 @@ resource "aws_msk_cluster" "default" {
 module "hostname" {
   count       = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
   source      = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
-  enabled     = var.enabled
-  namespace   = var.namespace
-  environment = var.environment
-  stage       = var.stage
+  enabled     = var.enabled && length(var.zone_id) > 0
   name        = "${module.label.id}-broker-${count.index + 1}"
-  delimiter   = var.delimiter
-  attributes  = var.attributes
-  tags        = var.tags
   zone_id     = var.zone_id
   records     = length(aws_msk_cluster.default[0].bootstrap_brokers) > 0 ? [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]] : [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers_tls))[count.index])[0]]
 }

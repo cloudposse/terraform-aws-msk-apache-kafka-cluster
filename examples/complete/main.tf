@@ -1,17 +1,3 @@
-module "label" {
-  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
-  enabled     = var.enabled
-  namespace   = var.namespace
-  environment = var.environment
-  stage       = var.stage
-  name        = var.name
-  delimiter   = var.delimiter
-  attributes  = var.attributes
-  tags        = var.tags
-  label_order = var.label_order
-}
-
-
 module "vpc" {
   source      = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.16.1"
   enabled     = var.enabled
@@ -43,13 +29,18 @@ module "subnets" {
   nat_instance_enabled = false
 }
 
+resource "random_id" "config_id" {
+  count       = var.enabled ? 1 : 0
+  byte_length = 2
+}
+
 module "kafka" {
   source                 = "../../"
   enabled                = var.enabled
   namespace              = var.namespace
   environment            = var.environment
   stage                  = var.stage
-  name                   = var.name
+  name                   = "${var.name}${var.delimiter}${random_id.config_id[0].hex}"
   delimiter              = var.delimiter
   attributes             = var.attributes
   tags                   = var.tags
