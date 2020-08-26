@@ -131,8 +131,8 @@ variable "certificate_authority_arns" {
 }
 
 variable "client_tls_auth_enabled" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Set `true` to enable the Client TLS Authentication"
 }
 

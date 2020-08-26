@@ -20,7 +20,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                 = var.enabled ? length(var.security_groups) : 0
+  count                    = var.enabled ? length(var.security_groups) : 0
   description              = "Allow inbound traffic from Security Groups"
   type                     = "ingress"
   from_port                = 0
@@ -131,10 +131,10 @@ resource "aws_msk_cluster" "default" {
 }
 
 module "hostname" {
-  count       = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
-  source      = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
-  enabled     = var.enabled && length(var.zone_id) > 0
-  name        = "${module.label.id}-broker-${count.index + 1}"
-  zone_id     = var.zone_id
-  records     = length(aws_msk_cluster.default[0].bootstrap_brokers) > 0 ? [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]] : [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers_tls))[count.index])[0]]
+  count   = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
+  source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
+  enabled = var.enabled && length(var.zone_id) > 0
+  name    = "${module.label.id}-broker-${count.index + 1}"
+  zone_id = var.zone_id
+  records = length(aws_msk_cluster.default[0].bootstrap_brokers) > 0 ? [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]] : [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers_tls))[count.index])[0]]
 }
