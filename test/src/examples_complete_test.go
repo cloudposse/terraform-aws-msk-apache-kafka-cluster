@@ -25,14 +25,14 @@ func TestExamplesComplete(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Run `terraform output` to get the value of an output variable
-	outputClusterArn := terraform.Output(t, terraformOptions, "cluster_arn")
+	outputClusterName := terraform.Output(t, terraformOptions, "cluster_name")
 
 	// Verify we're getting back the outputs we expect
-	assert.Regexp(t, "arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?", outputClusterArn) //nolint
+	assert.Regexp(t, "eg-ue2-test-msk-test-*", outputClusterName)
 
 	// Run `terraform output` to get the value of an output variable
 	outputSecurityGroupName := terraform.Output(t, terraformOptions, "security_group_name")
 
 	// Verify we're getting back the outputs we expect
-	assert.Equal(t, "eg-ue2-test-msk-test-ae84", outputSecurityGroupName)
+	assert.Regexp(t, "eg-ue2-test-msk-test-*", outputSecurityGroupName)
 }

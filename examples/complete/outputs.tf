@@ -23,3 +23,8 @@ output "security_group_name" {
   value       = module.kafka.security_group_name
 }
 
+output "cluster_name" {
+  description = "The cluster name of the MSK cluster"
+  value       = module.kafka.cluster_name
+}
+

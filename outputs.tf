@@ -38,6 +38,11 @@ output "hostname" {
   value       = join("", module.hostname.*.hostname)
 }
 
+output "cluster_name" {
+  description = "MSK Cluster name"
+  value       = join("", aws_msk_cluster.default.*.cluster_name)
+}
+
 output "security_group_id" {
   description = "The ID of the security group rule"
   value       = join("", aws_security_group.default.*.id)
