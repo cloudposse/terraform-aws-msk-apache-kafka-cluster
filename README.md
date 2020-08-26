@@ -27,7 +27,7 @@
 
 -->
 
-Terraform module to provision [Amazon Managed Streaming] (https://aws.amazon.com/msk/) for [Apache Kafka] (https://aws.amazon.com/msk/what-is-kafka/)
+Terraform module to provision [Amazon Managed Streaming](https://aws.amazon.com/msk/) for [Apache Kafka](https://aws.amazon.com/msk/what-is-kafka/)
 
 __Note:__ this module is intended for use with an existing VPC.
   To create a new VPC, use [terraform-aws-vpc](https://github.com/cloudposse/terraform-aws-vpc) module.
