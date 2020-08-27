@@ -156,7 +156,7 @@ variable "cloudwatch_logs_enabled" {
 
 variable "cloudwatch_logs_log_group" {
   type        = string
-  default     = ""
+  default     = null
   description = "Name of the Cloudwatch Log Group to deliver logs to"
 }
 
