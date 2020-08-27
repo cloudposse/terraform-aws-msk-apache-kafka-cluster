@@ -3,6 +3,7 @@ locals {
   bootstrap_brokers_list     = local.bootstrap_brokers != "" ? sort(split(",", local.bootstrap_brokers)) : []
   bootstrap_brokers_tls      = try(aws_msk_cluster.default[0].bootstrap_brokers_tls, "")
   bootstrap_brokers_tls_list = local.bootstrap_brokers_tls != "" ? sort(split(",", local.bootstrap_brokers_tls)) : []
+  bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list,local.bootstrap_brokers_tls_list)
 }
 
 
@@ -144,5 +145,5 @@ module "hostname" {
   enabled = var.enabled && length(var.zone_id) > 0
   name    = "${module.label.id}-broker-${count.index + 1}"
   zone_id = var.zone_id
-  records = length(local.bootstrap_brokers > 0) ? local.bootstrap_brokers_list : local.bootstrap_brokers_tls_list
+  records = [split(":",local.bootstrap_brokers_combined_list[count.index])[0]]
 }
