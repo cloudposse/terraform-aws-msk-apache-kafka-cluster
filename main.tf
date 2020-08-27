@@ -144,5 +144,5 @@ module "hostname" {
   enabled = var.enabled && length(var.zone_id) > 0
   name    = "${module.label.id}-broker-${count.index + 1}"
   zone_id = var.zone_id
-  records = length(local.bootstrap_brokers > 0) ? bootstrap_brokers_list : bootstrap_brokers_tls_list
+  records = length(local.bootstrap_brokers > 0) ? local.bootstrap_brokers_list : local.bootstrap_brokers_tls_list
 }
