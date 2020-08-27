@@ -31,3 +31,4 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_TERRAFORM_TERRASCAN: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_GO: false
