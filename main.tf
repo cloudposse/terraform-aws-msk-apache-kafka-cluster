@@ -1,3 +1,11 @@
+locals {
+  bootstrap_brokers = try(aws_msk_cluster.default[0].bootstrap_brokers, "")
+  bootstrap_brokers_list = local.bootstrap_brokers != "" ? sort(split(",", local.bootstrap_brokers)) : []
+  bootstrap_brokers_tls = try(aws_msk_cluster.default[0]. bootstrap_brokers_tls, "")
+  bootstrap_brokers_tls_list = local.bootstrap_brokers_tls != "" ? sort(split(",", local.bootstrap_brokers_tls)) : []
+}
+
+
 module "label" {
   source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
   enabled     = var.enabled
@@ -131,10 +139,10 @@ resource "aws_msk_cluster" "default" {
 }
 
 module "hostname" {
-  count   = var.enabled && var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
+  count   = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
   source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
   enabled = var.enabled && length(var.zone_id) > 0
   name    = "${module.label.id}-broker-${count.index + 1}"
   zone_id = var.zone_id
-  records = length(aws_msk_cluster.default[0].bootstrap_brokers) > 0 ? [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers))[count.index])[0]] : [split(":", sort(split(",", aws_msk_cluster.default[0].bootstrap_brokers_tls))[count.index])[0]]
+  records = length(local.bootstrap_brokers > 0) ? bootstrap_brokers_list : bootstrap_brokers_tls_list
 }
