@@ -1,9 +1,9 @@
 locals {
-  bootstrap_brokers          = try(aws_msk_cluster.default[0].bootstrap_brokers, "")
-  bootstrap_brokers_list     = local.bootstrap_brokers != "" ? sort(split(",", local.bootstrap_brokers)) : []
-  bootstrap_brokers_tls      = try(aws_msk_cluster.default[0].bootstrap_brokers_tls, "")
-  bootstrap_brokers_tls_list = local.bootstrap_brokers_tls != "" ? sort(split(",", local.bootstrap_brokers_tls)) : []
-  bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list,local.bootstrap_brokers_tls_list)
+  bootstrap_brokers               = try(aws_msk_cluster.default[0].bootstrap_brokers, "")
+  bootstrap_brokers_list          = local.bootstrap_brokers != "" ? sort(split(",", local.bootstrap_brokers)) : []
+  bootstrap_brokers_tls           = try(aws_msk_cluster.default[0].bootstrap_brokers_tls, "")
+  bootstrap_brokers_tls_list      = local.bootstrap_brokers_tls != "" ? sort(split(",", local.bootstrap_brokers_tls)) : []
+  bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list)
 }
 
 
@@ -143,7 +143,7 @@ module "hostname" {
   count   = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
   source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
   enabled = var.enabled && length(var.zone_id) > 0
-  name    = "${module.label.id}-broker-${count.index + 1}"
+  name    = "${module.label.name}-broker-${count.index + 1}"
   zone_id = var.zone_id
-  records = [split(":",local.bootstrap_brokers_combined_list[count.index])[0]]
+  records = [split(":", local.bootstrap_brokers_combined_list[count.index])[0]]
 }
