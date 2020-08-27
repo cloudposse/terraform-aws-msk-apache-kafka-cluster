@@ -1,5 +1,5 @@
 module "vpc" {
-  source      = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.16.1"
+  source      = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.16.2"
   enabled     = var.enabled
   namespace   = var.namespace
   environment = var.environment
@@ -40,7 +40,7 @@ module "kafka" {
   namespace              = var.namespace
   environment            = var.environment
   stage                  = var.stage
-  name                   = "${var.name}${var.delimiter}${random_id.config_id[0].hex}"
+  name                   = "${var.name}${var.delimiter}${try(random_id.config_id[0].hex,"")}"
   delimiter              = var.delimiter
   attributes             = var.attributes
   tags                   = var.tags

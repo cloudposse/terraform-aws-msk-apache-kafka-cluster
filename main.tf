@@ -131,7 +131,7 @@ resource "aws_msk_cluster" "default" {
 }
 
 module "hostname" {
-  count   = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
+  count   = var.enabled && var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
   source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
   enabled = var.enabled && length(var.zone_id) > 0
   name    = "${module.label.id}-broker-${count.index + 1}"
