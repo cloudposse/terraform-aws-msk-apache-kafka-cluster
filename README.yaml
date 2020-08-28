@@ -5,7 +5,7 @@
 #
 
 # Name of this project
-name: terraform-example-module
+name: terraform-aws-msk-apache-kafka-cluster
 
 # Logo for this project
 #logo: docs/logo.png
@@ -20,13 +20,13 @@ copyrights:
     year: "2020"
 
 # Canonical GitHub repo
-github_repo: cloudposse/terraform-example-module
+github_repo: cloudposse/terraform-aws-msk-apache-kafka-cluster
 
 # Badges to display
 badges:
   - name: "Latest Release"
-    image: "https://img.shields.io/github/release/cloudposse/terraform-example-module.svg"
-    url: "https://github.com/cloudposse/terraform-example-module/releases/latest"
+    image: "https://img.shields.io/github/release/cloudposse/terraform-aws-msk-apache-kafka-cluster.svg"
+    url: "https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster/releases/latest"
   - name: "Slack Community"
     image: "https://slack.cloudposse.com/badge.svg"
     url: "https://slack.cloudposse.com"
@@ -39,6 +39,12 @@ related:
   - name: "terraform-null-label"
     description: "Terraform module designed to generate consistent names and tags for resources. Use terraform-null-label to implement a strict naming convention."
     url: "https://github.com/cloudposse/terraform-null-label"
+  - name: "terraform-aws-route53-cluster-hostname"
+    description: "Terraform module to define a consistent AWS Route53 hostname"
+    url: "https://github.com/cloudposse/terraform-aws-route53-cluster-hostname"
+  - name: "terraform-aws-vpc"
+    description: "Terraform module to provision a VPC with Internet Gateway."
+    url: "https://github.com/cloudposse/terraform-aws-vpc"
 
 # List any resources helpful for someone to get started. For example, link to the hashicorp documentation or AWS documentation.
 references:
@@ -57,9 +63,10 @@ references:
 
 # Short description of this project
 description: |-
-  This is `terraform-example-module` project provides all the scaffolding for a typical well-built Cloud Posse module. It's a template repository you can
-  use when creating new repositories.
+  Terraform module to provision [Amazon Managed Streaming](https://aws.amazon.com/msk/) for [Apache Kafka](https://aws.amazon.com/msk/what-is-kafka/)
 
+  __Note:__ this module is intended for use with an existing VPC.
+    To create a new VPC, use [terraform-aws-vpc](https://github.com/cloudposse/terraform-aws-vpc) module.
 # Introduction to the project
 #introduction: |-
 #  This is an introduction.
@@ -69,27 +76,31 @@ usage: |-
   Here's how to invoke this example module in your projects
 
   ```hcl
-  module "example" {
-    source = "https://github.com/cloudposse/terraform-example-module.git?ref=master"
-    example = "Hello world!"
+  module "kafka" {
+    source                 = "https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster.git?ref=master"
+    namespace              = "eg"
+    stage                  = "prod"
+    name                   = "app"
+    vpc_id                 = "vpc-XXXXXXXX"
+    zone_id                = "Z14EN2YD427LRQ"
+    security_groups        = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
+    subnet_ids             = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
+    kafka_version          = "2.4.1"
+    number_of_broker_nodes = 3
+    broker_instance_type   = "kafka.m5.large"
   }
   ```
 
 # Example usage
 examples: |-
   Here is an example of using this module:
-  - [`examples/complete`](https://github.com/cloudposse/terraform-example-module/) - complete example of using this module
-
-# How to get started quickly
-#quickstart: |-
-#  Here's how to get started...
-
-# Other files to include in this README from the project folder
+  - [`examples/complete`](https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster/) - complete example of using this module
 include:
   - "docs/targets.md"
   - "docs/terraform.md"
-
 # Contributors to this project
 contributors:
   - name: "Erik Osterman"
     github: "osterman"
+  - name: "Hugo Samayoa"
+    github: "htplbc"

@@ -25,8 +25,14 @@ func TestExamplesComplete(t *testing.T) {
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Run `terraform output` to get the value of an output variable
-	outputExample := terraform.Output(t, terraformOptions, "example")
+	outputClusterName := terraform.Output(t, terraformOptions, "cluster_name")
 
 	// Verify we're getting back the outputs we expect
-	assert.Regexp(t, "^Hello world! [0-9]+$", outputExample)
+	assert.Regexp(t, "^eg-ue2-test-msk-test-[0-9a-fA-F]+$", outputClusterName)
+
+	// Run `terraform output` to get the value of an output variable
+	outputSecurityGroupName := terraform.Output(t, terraformOptions, "security_group_name")
+
+	// Verify we're getting back the outputs we expect
+	assert.Regexp(t, "^eg-ue2-test-msk-test-[0-9a-fA-F]+$", outputSecurityGroupName)
 }
