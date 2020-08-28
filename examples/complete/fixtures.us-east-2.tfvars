@@ -1,5 +1,7 @@
 enabled = true
 
+region = "us-west-2"
+
 namespace = "eg"
 
 environment = "ue2"

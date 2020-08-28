@@ -1,3 +1,7 @@
+provider "aws" {
+  region = var.region
+}
+
 module "vpc" {
   source      = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.16.2"
   enabled     = var.enabled

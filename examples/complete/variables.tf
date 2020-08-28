@@ -76,3 +76,8 @@ variable "number_of_broker_nodes" {
   type        = number
   description = "The desired total number of broker nodes in the kafka cluster. It must be a multiple of the number of specified client subnets. It must be a multiple of the number of specified client subnets."
 }
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+}
