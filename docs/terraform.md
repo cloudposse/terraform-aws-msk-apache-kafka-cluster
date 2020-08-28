@@ -1,4 +1,3 @@
-<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
@@ -69,4 +68,3 @@
 | security\_group\_name | The name of the security group rule |
 | zookeeper\_connect\_string | A comma separated list of one or more hostname:port pairs to use to connect to the Apache Zookeeper cluster |
 
-<!-- markdownlint-restore -->

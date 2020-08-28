@@ -95,16 +95,9 @@ usage: |-
 examples: |-
   Here is an example of using this module:
   - [`examples/complete`](https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster/) - complete example of using this module
-
-# How to get started quickly
-#quickstart: |-
-#  Here's how to get started...
-
-# Other files to include in this README from the project folder
 include:
   - "docs/targets.md"
   - "docs/terraform.md"
-
 # Contributors to this project
 contributors:
   - name: "Erik Osterman"
