@@ -3,15 +3,15 @@ provider "aws" {
 }
 
 module "vpc" {
-  source      = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.17.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.17.0"
 
-  cidr_block  = "172.16.0.0/16"
+  cidr_block = "172.16.0.0/16"
 
   context = module.this.context
 }
 
 module "subnets" {
-  source               = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.28.0"
+  source = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.28.0"
 
   availability_zones   = var.availability_zones
   vpc_id               = module.vpc.vpc_id
@@ -29,7 +29,7 @@ resource "random_id" "config_id" {
 }
 
 module "kafka" {
-  source                 = "../../"
+  source = "../../"
 
   zone_id                = var.zone_id
   security_groups        = [module.vpc.vpc_default_security_group_id]
