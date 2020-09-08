@@ -6,30 +6,16 @@ locals {
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list)
 }
 
-
-module "label" {
-  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
-  enabled     = var.enabled
-  namespace   = var.namespace
-  environment = var.environment
-  stage       = var.stage
-  name        = var.name
-  delimiter   = var.delimiter
-  attributes  = var.attributes
-  tags        = var.tags
-  label_order = var.label_order
-}
-
 resource "aws_security_group" "default" {
-  count       = var.enabled ? 1 : 0
+  count       = module.this.enabled ? 1 : 0
   vpc_id      = var.vpc_id
-  name        = module.label.id
+  name        = module.this.id
   description = "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic"
-  tags        = module.label.tags
+  tags        = module.this.tags
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = var.enabled ? length(var.security_groups) : 0
+  count                    = module.this.enabled ? length(var.security_groups) : 0
   description              = "Allow inbound traffic from Security Groups"
   type                     = "ingress"
   from_port                = 0
@@ -40,7 +26,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = var.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
+  count             = module.this.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
   description       = "Allow inbound traffic from CIDR blocks"
   type              = "ingress"
   from_port         = 0
@@ -51,7 +37,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 resource "aws_security_group_rule" "egress" {
-  count             = var.enabled ? 1 : 0
+  count             = module.this.enabled ? 1 : 0
   description       = "Allow all egress traffic"
   type              = "egress"
   from_port         = 0
@@ -62,17 +48,17 @@ resource "aws_security_group_rule" "egress" {
 }
 
 resource "aws_msk_configuration" "config" {
-  count          = var.enabled ? 1 : 0
+  count          = module.this.enabled ? 1 : 0
   kafka_versions = [var.kafka_version]
-  name           = module.label.id
+  name           = module.this.id
   description    = "Manages an Amazon Managed Streaming for Kafka configuration"
 
   server_properties = join("\n", [for k in keys(var.properties) : format("%s = %s", k, var.properties[k])])
 }
 
 resource "aws_msk_cluster" "default" {
-  count                  = var.enabled ? 1 : 0
-  cluster_name           = module.label.id
+  count                  = module.this.enabled ? 1 : 0
+  cluster_name           = module.this.id
   kafka_version          = var.kafka_version
   number_of_broker_nodes = var.number_of_broker_nodes
   enhanced_monitoring    = var.enhanced_monitoring
@@ -136,14 +122,16 @@ resource "aws_msk_cluster" "default" {
     }
   }
 
-  tags = module.label.tags
+  tags = module.this.tags
 }
 
 module "hostname" {
   count   = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
-  source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.5.0"
-  enabled = var.enabled && length(var.zone_id) > 0
-  name    = "${module.label.name}-broker-${count.index + 1}"
+  source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.6.0"
+  enabled = module.this.enabled && length(var.zone_id) > 0
+  name    = "${module.this.name}-broker-${count.index + 1}"
   zone_id = var.zone_id
   records = [split(":", local.bootstrap_brokers_combined_list[count.index])[0]]
+
+  context = module.this.context
 }
