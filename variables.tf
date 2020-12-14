@@ -143,8 +143,8 @@ variable "properties" {
 }
 
 variable "client_sasl_scram_enabled" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Enables SCRAM client authentication via AWS Secrets Manager."
 }
 
