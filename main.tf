@@ -83,13 +83,17 @@ resource "aws_msk_cluster" "default" {
     encryption_at_rest_kms_key_arn = var.encryption_at_rest_kms_key_arn
   }
 
-  dynamic "client_authentication" {
-    for_each = var.client_tls_auth_enabled ? [1] : []
+  client_authentication {
 
-    content {
-      tls {
+    dynamic "tls" {
+      for_each = var.client_tls_auth_enabled ? [1] : []
+      content {
         certificate_authority_arns = var.certificate_authority_arns
       }
+    }
+
+    sasl {
+      scram = var.sasl_scram_enabled
     }
   }
 

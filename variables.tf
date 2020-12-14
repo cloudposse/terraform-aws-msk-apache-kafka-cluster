@@ -142,4 +142,10 @@ variable "properties" {
   description = "Contents of the server.properties file. Supported properties are documented in the [MSK Developer Guide](https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html)"
 }
 
+variable "sasl_scram_enabled" {
+  type = bool
+  default = false
+  description = "Enables SCRAM client authentication via AWS Secrets Manager."
+}
+
 
