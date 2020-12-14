@@ -84,7 +84,6 @@ resource "aws_msk_cluster" "default" {
   }
 
   client_authentication {
-
     dynamic "tls" {
       for_each = var.client_tls_auth_enabled ? [1] : []
       content {
@@ -92,8 +91,11 @@ resource "aws_msk_cluster" "default" {
       }
     }
 
-    sasl {
-      scram = var.sasl_scram_enabled
+    dynamic "sasl" {
+      for_each = var.sasl_scram_enabled ? [1] : []
+      content {
+        scram = var.sasl_scram_enabled
+      }
     }
   }
 
