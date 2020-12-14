@@ -76,6 +76,12 @@ variable "certificate_authority_arns" {
   description = "List of ACM Certificate Authority Amazon Resource Names (ARNs) to be used for TLS client authentication"
 }
 
+variable "client_sasl_scram_enabled" {
+  type        = bool
+  default     = false
+  description = "Enables SCRAM client authentication via AWS Secrets Manager."
+}
+
 variable "client_tls_auth_enabled" {
   type        = bool
   default     = false
@@ -141,11 +147,3 @@ variable "properties" {
   default     = {}
   description = "Contents of the server.properties file. Supported properties are documented in the [MSK Developer Guide](https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html)"
 }
-
-variable "client_sasl_scram_enabled" {
-  type        = bool
-  default     = false
-  description = "Enables SCRAM client authentication via AWS Secrets Manager."
-}
-
-
