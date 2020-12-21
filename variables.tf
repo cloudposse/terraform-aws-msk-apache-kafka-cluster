@@ -82,6 +82,12 @@ variable "client_sasl_scram_enabled" {
   description = "Enables SCRAM client authentication via AWS Secrets Manager."
 }
 
+variable "client_sasl_scram_secret_association_arns" {
+  type        = list(string)
+  default     = []
+  description = "List of AWS Secrets Manager secret ARNs for scram authentication."
+}
+
 variable "client_tls_auth_enabled" {
   type        = bool
   default     = false
