@@ -25,6 +25,8 @@
 | broker\_volume\_size | The size in GiB of the EBS volume for the data drive on each broker node | `number` | `1000` | no |
 | certificate\_authority\_arns | List of ACM Certificate Authority Amazon Resource Names (ARNs) to be used for TLS client authentication | `list(string)` | `[]` | no |
 | client\_broker | Encryption setting for data in transit between clients and brokers. Valid values: `TLS`, `TLS_PLAINTEXT`, and `PLAINTEXT` | `string` | `"TLS"` | no |
+| client\_sasl\_scram\_enabled | Enables SCRAM client authentication via AWS Secrets Manager. | `bool` | `false` | no |
+| client\_sasl\_scram\_secret\_association\_arns | List of AWS Secrets Manager secret ARNs for scram authentication. | `list(string)` | `[]` | no |
 | client\_tls\_auth\_enabled | Set `true` to enable the Client TLS Authentication | `bool` | `false` | no |
 | cloudwatch\_logs\_enabled | Indicates whether you want to enable or disable streaming broker logs to Cloudwatch Logs | `bool` | `false` | no |
 | cloudwatch\_logs\_log\_group | Name of the Cloudwatch Log Group to deliver logs to | `string` | `null` | no |
@@ -63,6 +65,7 @@
 |------|-------------|
 | bootstrap\_broker\_tls | A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity to the kafka cluster |
 | bootstrap\_brokers | A comma separated list of one or more hostname:port pairs of kafka brokers suitable to boostrap connectivity to the kafka cluster |
+| bootstrap\_brokers\_scram | A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity using SASL/SCRAM to the kafka cluster. |
 | cluster\_arn | Amazon Resource Name (ARN) of the MSK cluster |
 | cluster\_name | MSK Cluster name |
 | config\_arn | Amazon Resource Name (ARN) of the configuration |
