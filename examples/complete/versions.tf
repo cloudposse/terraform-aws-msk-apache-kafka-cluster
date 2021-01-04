@@ -8,11 +8,14 @@ terraform {
     }
     template = {
       source  = "hashicorp/template"
-      version = "~> 2.0"
+      version = ">= 2.0"
     }
     local = {
       source  = "hashicorp/local"
-      version = "~> 1.3"
+      version = ">= 1.3"
+    }
+    random = {
+      source = "hashicorp/random"
     }
   }
 }
