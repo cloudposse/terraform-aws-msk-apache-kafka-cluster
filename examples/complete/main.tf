@@ -3,7 +3,8 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.17.0"
+  source  = "cloudposse/vpc/aws"
+  version = "0.18.1"
 
   cidr_block = "172.16.0.0/16"
 
@@ -11,7 +12,8 @@ module "vpc" {
 }
 
 module "subnets" {
-  source = "git::https://github.com/cloudposse/terraform-aws-dynamic-subnets.git?ref=tags/0.28.0"
+  source  = "cloudposse/dynamic-subnets/aws"
+  version = "0.33.0"
 
   availability_zones   = var.availability_zones
   vpc_id               = module.vpc.vpc_id
@@ -24,7 +26,7 @@ module "subnets" {
 }
 
 resource "random_id" "config_id" {
-  count       = var.enabled ? 1 : 0
+  count       = module.this.enabled ? 1 : 0
   byte_length = 2
 }
 
@@ -39,6 +41,7 @@ module "kafka" {
   number_of_broker_nodes = var.number_of_broker_nodes
   broker_instance_type   = var.broker_instance_type
 
-  name    = "${var.name}${var.delimiter}${try(random_id.config_id[0].hex, "")}"
+  name = "${module.this.name}${module.this.delimiter}${try(random_id.config_id[0].hex, "")}"
+
   context = module.this.context
 }

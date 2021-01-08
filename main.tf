@@ -3,7 +3,9 @@ locals {
   bootstrap_brokers_list          = local.bootstrap_brokers != "" ? sort(split(",", local.bootstrap_brokers)) : []
   bootstrap_brokers_tls           = try(aws_msk_cluster.default[0].bootstrap_brokers_tls, "")
   bootstrap_brokers_tls_list      = local.bootstrap_brokers_tls != "" ? sort(split(",", local.bootstrap_brokers_tls)) : []
-  bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list)
+  bootstrap_brokers_scram         = try(aws_msk_cluster.default[0].bootstrap_brokers_sasl_scram, "")
+  bootstrap_brokers_scram_list    = local.bootstrap_brokers_scram != "" ? sort(split(",", local.bootstrap_brokers_scram)) : []
+  bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list)
 }
 
 resource "aws_security_group" "default" {
@@ -84,11 +86,19 @@ resource "aws_msk_cluster" "default" {
   }
 
   dynamic "client_authentication" {
-    for_each = var.client_tls_auth_enabled ? [1] : []
-
+    for_each = var.client_tls_auth_enabled || var.client_sasl_scram_enabled ? [1] : []
     content {
-      tls {
-        certificate_authority_arns = var.certificate_authority_arns
+      dynamic "tls" {
+        for_each = var.client_tls_auth_enabled ? [1] : []
+        content {
+          certificate_authority_arns = var.certificate_authority_arns
+        }
+      }
+      dynamic "sasl" {
+        for_each = var.client_sasl_scram_enabled ? [1] : []
+        content {
+          scram = var.client_sasl_scram_enabled
+        }
       }
     }
   }
@@ -125,9 +135,17 @@ resource "aws_msk_cluster" "default" {
   tags = module.this.tags
 }
 
+resource "aws_msk_scram_secret_association" "default" {
+  count = var.client_sasl_scram_enabled ? 1 : 0
+
+  cluster_arn     = aws_msk_cluster.default[0].arn
+  secret_arn_list = var.client_sasl_scram_secret_association_arns
+}
+
 module "hostname" {
   count   = var.number_of_broker_nodes > 0 ? var.number_of_broker_nodes : 0
-  source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.6.0"
+  source  = "cloudposse/route53-cluster-hostname/aws"
+  version = "0.9.0"
   enabled = module.this.enabled && length(var.zone_id) > 0
   name    = "${module.this.name}-broker-${count.index + 1}"
   zone_id = var.zone_id
