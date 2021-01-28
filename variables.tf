@@ -32,6 +32,7 @@ variable "subnet_ids" {
 variable "zone_id" {
   type        = string
   description = "Route53 DNS Zone ID for MSK broker hostnames"
+  default     = null
 }
 
 variable "security_groups" {

@@ -179,7 +179,7 @@ Available targets:
 | subnet\_ids | Subnet IDs for Client Broker | `list(string)` | n/a | yes |
 | tags | Additional tags (e.g. `map('BusinessUnit','XYZ')` | `map(string)` | `{}` | no |
 | vpc\_id | VPC ID where subnets will be created (e.g. `vpc-aceb2723`) | `string` | n/a | yes |
-| zone\_id | Route53 DNS Zone ID for MSK broker hostnames | `string` | n/a | yes |
+| zone\_id | Route53 DNS Zone ID for MSK broker hostnames | `string` | `null` | yes |
 
 ## Outputs
 
