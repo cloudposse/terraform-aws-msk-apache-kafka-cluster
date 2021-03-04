@@ -14,6 +14,23 @@
 |------|---------|
 | aws | >= 2.0 |
 
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| hostname | cloudposse/route53-cluster-hostname/aws | 0.9.0 |
+| this | cloudposse/label/null | 0.24.1 |
+
+## Resources
+
+| Name |
+|------|
+| [aws_msk_cluster](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster) |
+| [aws_msk_configuration](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_configuration) |
+| [aws_msk_scram_secret_association](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_scram_secret_association) |
+| [aws_security_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) |
+| [aws_security_group_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -59,7 +76,7 @@
 | subnet\_ids | Subnet IDs for Client Broker | `list(string)` | n/a | yes |
 | tags | Additional tags (e.g. `map('BusinessUnit','XYZ')` | `map(string)` | `{}` | no |
 | vpc\_id | VPC ID where subnets will be created (e.g. `vpc-aceb2723`) | `string` | n/a | yes |
-| zone\_id | Route53 DNS Zone ID for MSK broker hostnames | `string` | n/a | yes |
+| zone\_id | Route53 DNS Zone ID for MSK broker hostnames | `string` | `null` | no |
 
 ## Outputs
 
@@ -77,5 +94,4 @@
 | security\_group\_id | The ID of the security group rule |
 | security\_group\_name | The name of the security group rule |
 | zookeeper\_connect\_string | A comma separated list of one or more hostname:port pairs to use to connect to the Apache Zookeeper cluster |
-
 <!-- markdownlint-restore -->
