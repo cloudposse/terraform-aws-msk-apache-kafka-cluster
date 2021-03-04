@@ -18,7 +18,7 @@
 
 | Name | Source | Version |
 |------|--------|---------|
-| hostname | cloudposse/route53-cluster-hostname/aws | 0.9.0 |
+| hostname | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
 | this | cloudposse/label/null | 0.24.1 |
 
 ## Resources
