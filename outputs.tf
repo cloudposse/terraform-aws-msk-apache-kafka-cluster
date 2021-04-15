@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------
+# OUTPUTS: TF-MOD-AWS-MSK-APACHE-KAFKA-CLUSTER
+# -----------------------------------------------------------------------------
+
 output "cluster_arn" {
   description = "Amazon Resource Name (ARN) of the MSK cluster"
   value       = join("", aws_msk_cluster.default.*.arn)
