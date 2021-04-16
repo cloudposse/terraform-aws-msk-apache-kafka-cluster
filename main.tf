@@ -9,7 +9,7 @@ locals {
 }
 
 resource "aws_security_group" "default" {
-  count       = var.use_existing_security_groups && module.this.enabled ? 1 : 0
+  count       = var.use_existing_security_groups == false && module.this.enabled ? 1 : 0
   vpc_id      = var.vpc_id
   name        = module.this.id
   description = "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic"
@@ -17,7 +17,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = var.use_existing_security_groups && module.this.enabled ? length(var.security_groups) : 0
+  count                    = var.use_existing_security_groups == false && module.this.enabled ? length(var.security_groups) : 0
   description              = "Allow inbound traffic from Security Groups"
   type                     = "ingress"
   from_port                = 0
@@ -28,7 +28,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = var.use_existing_security_groups && module.this.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
+  count             = var.use_existing_security_groups == false && module.this.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
   description       = "Allow inbound traffic from CIDR blocks"
   type              = "ingress"
   from_port         = 0
@@ -39,7 +39,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 resource "aws_security_group_rule" "egress" {
-  count             = var.use_existing_security_groups && module.this.enabled ? 1 : 0
+  count             = var.use_existing_security_groups == false && module.this.enabled ? 1 : 0
   description       = "Allow all egress traffic"
   type              = "egress"
   from_port         = 0
