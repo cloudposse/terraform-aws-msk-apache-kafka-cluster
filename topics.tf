@@ -2,7 +2,7 @@ module "kafka_topics" {
   count             = length(aws_msk_cluster.default.*.bootstrap_brokers) > 0 ? 1 : 0
   context           = module.this.context
   enabled           = true
-  source            = "./modules/kafka_topcs"
+  source            = "./modules/kafka_topics"
   depends_on        = [aws_msk_cluster.default]
   bootstrap_servers = length(aws_msk_cluster.default.*.bootstrap_brokers) > 0 ? aws_msk_cluster.default.*.bootstrap_brokers : 0
   topic_config = [
