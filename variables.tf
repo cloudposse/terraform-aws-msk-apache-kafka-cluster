@@ -67,6 +67,18 @@ variable "zone_id" {
   default     = null
 }
 
+variable "use_existing_security_groups" {
+  type        = bool
+  default     = true
+  description = "Whether to use existing security groups to attach to the cluster"
+}
+
+variable "existing_security_groups" {
+  type        = list(string)
+  default     = []
+  description = "List of security group IDs to be allowed to connect to the cluster"
+}
+
 variable "security_groups" {
   type        = list(string)
   default     = []
