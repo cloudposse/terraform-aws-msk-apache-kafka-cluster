@@ -9,7 +9,7 @@ output "cluster_arn" {
 
 output "bootstrap_brokers" {
   description = "A comma separated list of one or more hostname:port pairs of kafka brokers suitable to boostrap connectivity to the kafka cluster"
-  value       = join("", aws_msk_cluster.default.*.bootstrap_brokers)
+  value       = aws_msk_cluster.default.*.bootstrap_brokers
 }
 
 output "bootstrap_broker_tls" {
