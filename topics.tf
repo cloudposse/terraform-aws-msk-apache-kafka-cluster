@@ -13,4 +13,7 @@ module "kafka_topics" {
       config             = {}
     }
   ]
+  providers = {
+    kafka = kafka
+  }
 }
