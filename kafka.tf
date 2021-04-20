@@ -8,8 +8,62 @@ module "kafka" {
   topic_config = [
     {
       name               = "test"
-      partitions         = 0
-      replication_factor = 0
+      partitions         = 3
+      replication_factor = 3
+      config             = {}
+    },
+    {
+      name               = "telematics_enrichment.Trakm8HiResAccelDTO.avro18.topic"
+      partitions         = 3
+      replication_factor = 3
+      config             = {}
+    },
+    {
+      name               = "telematics_enrichment.Trakm8HiResFilteredAccelDTO.avro18.topic"
+      partitions         = 3
+      replication_factor = 3
+      config             = {}
+    },
+    {
+      name               = "telematics_enrichment.Trakm8HiResData.json.topic"
+      partitions         = 3
+      replication_factor = 3
+      config             = {}
+    },
+    {
+      name               = "telematics_enrichment.TripPathDTO.avro18.topic"
+      partitions         = 50
+      replication_factor = 3
+      config             = {}
+    },
+    {
+      name               = "telematics_enrichment.Trakm8GpsDTO.avro18.topic"
+      partitions         = 3
+      replication_factor = 3
+      config             = {}
+    },
+    {
+      name               = "telematics_enrichment.TripSummaryDTO.avro18.topic"
+      partitions         = 3
+      replication_factor = 3
+      config             = {}
+    },
+    {
+      name               = "telematics_enrichment.HarshCornering.AccelEventDTO.avro18.topic"
+      partitions         = 3
+      replication_factor = 3
+      config             = {}
+    },
+    {
+      name               = "telematics_enrichment.HarshCornering.DrivingEventDTO.avro18.topic"
+      partitions         = 3
+      replication_factor = 3
+      config             = {}
+    },
+    {
+      name               = "telematics_enrichment.NoLeaseVin.VehicleStateDTO.avro18.topic"
+      partitions         = 3
+      replication_factor = 3
       config             = {}
     }
   ]
