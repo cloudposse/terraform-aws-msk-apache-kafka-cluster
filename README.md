@@ -1,3 +1,4 @@
+
 <!-- markdownlint-disable -->
 # terraform-aws-msk-apache-kafka-cluster
 
@@ -34,7 +35,6 @@ Terraform module to provision [Amazon Managed Streaming](https://aws.amazon.com/
 __Note:__ this module is intended for use with an existing VPC.
   To create a new VPC, use [terraform-aws-vpc](https://github.com/cloudposse/terraform-aws-vpc) module.
 
-
 ---
 
 This project is part of our comprehensive ["SweetOps"](https://cpco.io/sweetops) approach towards DevOps.
@@ -59,7 +59,6 @@ It's 100% Open Source and licensed under the [APACHE2](LICENSE).
 
 
 We literally have [*hundreds of terraform modules*][terraform_modules] that are Open Source and well-maintained. Check them out!
-
 
 
 
@@ -102,19 +101,6 @@ The table below correctly indicates which inputs are required.
 Here's how to invoke this example module in your projects
 
 ```hcl
-module "kafka" {
-  source                 = "https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster.git?ref=master"
-  namespace              = "eg"
-  stage                  = "prod"
-  name                   = "app"
-  vpc_id                 = "vpc-XXXXXXXX"
-  zone_id                = "Z14EN2YD427LRQ"
-  security_groups        = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
-  subnet_ids             = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
-  kafka_version          = "2.4.1"
-  number_of_broker_nodes = 3
-  broker_instance_type   = "kafka.m5.large"
-}
 ```
 
 
@@ -161,6 +147,7 @@ Available targets:
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_hostname"></a> [hostname](#module\_hostname) | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
+| <a name="module_kafka"></a> [kafka](#module\_kafka) | ./modules/kafka |  |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.24.1 |
 
 ## Resources

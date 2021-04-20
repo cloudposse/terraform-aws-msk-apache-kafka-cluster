@@ -20,6 +20,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_hostname"></a> [hostname](#module\_hostname) | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
+| <a name="module_kafka"></a> [kafka](#module\_kafka) | ./modules/kafka |  |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.24.1 |
 
 ## Resources
