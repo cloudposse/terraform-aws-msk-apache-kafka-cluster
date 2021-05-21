@@ -4,17 +4,17 @@ output "cluster_arn" {
 }
 
 output "bootstrap_brokers" {
-  description = "A comma separated list of one or more hostname:port pairs of kafka brokers suitable to boostrap connectivity to the kafka cluster"
+  description = "A comma separated list of one or more hostname:port pairs of MSK cluster suitable to boostrap connectivity to the kafka cluster"
   value       = join("", aws_msk_cluster.default.*.bootstrap_brokers)
 }
 
 output "bootstrap_broker_tls" {
-  description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity to the kafka cluster"
+  description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs MSK cluster suitable to boostrap connectivity to the kafka cluster"
   value       = join("", aws_msk_cluster.default.*.bootstrap_brokers_tls)
 }
 
 output "bootstrap_brokers_scram" {
-  description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity using SASL/SCRAM to the kafka cluster."
+  description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs MSK cluster suitable to boostrap connectivity using SASL/SCRAM to the kafka cluster."
   value       = join("", aws_msk_cluster.default.*.bootstrap_brokers_sasl_scram)
 }
 
@@ -49,11 +49,16 @@ output "cluster_name" {
 }
 
 output "security_group_id" {
-  description = "The ID of the security group rule"
-  value       = join("", aws_security_group.default.*.id)
+  value       = module.security_group.id
+  description = "MSK cluster Security Group ID"
+}
+
+output "security_group_arn" {
+  value       = module.security_group.arn
+  description = "MSK cluster Security Group ARN"
 }
 
 output "security_group_name" {
-  description = "The name of the security group rule"
-  value       = join("", aws_security_group.default.*.name)
+  value       = module.security_group.name
+  description = "MSK cluster Security Group name"
 }

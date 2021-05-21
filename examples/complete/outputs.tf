@@ -23,8 +23,12 @@ output "security_group_name" {
   value       = module.kafka.security_group_name
 }
 
+output "security_group_arn" {
+  description = "The ARN of the security group rule for the MSK cluster"
+  value       = module.kafka.security_group_arn
+}
+
 output "cluster_name" {
   description = "The cluster name of the MSK cluster"
   value       = module.kafka.cluster_name
 }
-

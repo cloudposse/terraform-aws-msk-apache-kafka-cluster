@@ -34,14 +34,33 @@ module "kafka" {
   source = "../../"
 
   zone_id                = var.zone_id
-  security_groups        = [module.vpc.vpc_default_security_group_id]
   vpc_id                 = module.vpc.vpc_id
   subnet_ids             = module.subnets.private_subnet_ids
   kafka_version          = var.kafka_version
   number_of_broker_nodes = var.number_of_broker_nodes
   broker_instance_type   = var.broker_instance_type
 
-  name = "${module.this.name}${module.this.delimiter}${try(random_id.config_id[0].hex, "")}"
+  security_group_rules = [
+    {
+      type                     = "egress"
+      from_port                = 0
+      to_port                  = 65535
+      protocol                 = "-1"
+      cidr_blocks              = ["0.0.0.0/0"]
+      source_security_group_id = null
+      description              = "Allow all outbound traffic"
+    },
+    {
+      type                     = "ingress"
+      from_port                = 0
+      to_port                  = 65535
+      protocol                 = "-1"
+      cidr_blocks              = []
+      source_security_group_id = module.vpc.vpc_default_security_group_id
+      description              = "Allow all inbound traffic from trusted Security Groups"
+    },
+  ]
 
+  name    = "${module.this.name}${module.this.delimiter}${try(random_id.config_id[0].hex, "")}"
   context = module.this.context
 }
