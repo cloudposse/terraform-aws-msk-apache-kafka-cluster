@@ -38,14 +38,13 @@ func TestExamplesComplete(t *testing.T) {
 
 	// Run `terraform output` to get the value of an output variable
 	outputClusterName := terraform.Output(t, terraformOptions, "cluster_name")
-
 	// Verify we're getting back the outputs we expect
-	assert.Regexp(t, "^eg-ue2-test-msk-test-[0-9a-fA-F]+$", outputClusterName)
+	assert.Equal(t, "eg-ue2-test-msk-test-"+randId, outputClusterName)
 
 	// Run `terraform output` to get the value of an output variable
 	securityGroupName := terraform.Output(t, terraformOptions, "security_group_name")
 	// Verify we're getting back the outputs we expect
-	assert.Regexp(t, "^eg-ue2-test-msk-test-[0-9a-fA-F]+$", securityGroupName)
+	assert.Equal(t, "eg-ue2-test-msk-test-"+randId, securityGroupName)
 
 	// Run `terraform output` to get the value of an output variable
 	securityGroupID := terraform.Output(t, terraformOptions, "security_group_id")

@@ -25,11 +25,6 @@ module "subnets" {
   context = module.this.context
 }
 
-resource "random_id" "config_id" {
-  count       = module.this.enabled ? 1 : 0
-  byte_length = 2
-}
-
 module "kafka" {
   source = "../../"
 
@@ -61,6 +56,5 @@ module "kafka" {
     },
   ]
 
-  name    = "${module.this.name}${module.this.delimiter}${try(random_id.config_id[0].hex, "")}"
   context = module.this.context
 }
