@@ -90,8 +90,8 @@ variable "client_sasl_scram_secret_association_arns" {
 }
 
 variable "client_sasl_iam_enabled" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Enables client authentication via IAM policies"
 }
 
