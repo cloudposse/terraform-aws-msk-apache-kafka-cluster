@@ -166,7 +166,6 @@ Available targets:
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2.0 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | >= 1.2 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | >= 2.2 |
 
 ## Providers
 
@@ -180,7 +179,7 @@ Available targets:
 |------|--------|---------|
 | <a name="module_hostname"></a> [hostname](#module\_hostname) | cloudposse/route53-cluster-hostname/aws | 0.12.0 |
 | <a name="module_security_group"></a> [security\_group](#module\_security\_group) | cloudposse/security-group/aws | 0.3.1 |
-
+| <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.24.1 |
 
 ## Resources
 
@@ -189,7 +188,6 @@ Available targets:
 | [aws_msk_cluster.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster) | resource |
 | [aws_msk_configuration.config](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_configuration) | resource |
 | [aws_msk_scram_secret_association.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_scram_secret_association) | resource |
-
 
 ## Inputs
 
@@ -246,6 +244,8 @@ Available targets:
 
 | Name | Description |
 |------|-------------|
+| <a name="output_bootstrap_broker_tls"></a> [bootstrap\_broker\_tls](#output\_bootstrap\_broker\_tls) | A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity to the kafka cluster |
+| <a name="output_bootstrap_brokers"></a> [bootstrap\_brokers](#output\_bootstrap\_brokers) | A comma separated list of one or more hostname:port pairs of kafka brokers suitable to boostrap connectivity to the kafka cluster |
 | <a name="output_bootstrap_brokers_iam"></a> [bootstrap\_brokers\_iam](#output\_bootstrap\_brokers\_iam) | A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity using SASL/IAM to the kafka cluster. |
 | <a name="output_bootstrap_brokers_scram"></a> [bootstrap\_brokers\_scram](#output\_bootstrap\_brokers\_scram) | A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity using SASL/SCRAM to the kafka cluster. |
 | <a name="output_cluster_arn"></a> [cluster\_arn](#output\_cluster\_arn) | Amazon Resource Name (ARN) of the MSK cluster |
