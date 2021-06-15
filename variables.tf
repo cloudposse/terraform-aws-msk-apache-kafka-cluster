@@ -37,7 +37,7 @@ variable "zone_id" {
 
 variable "security_group_enabled" {
   type        = bool
-  description = "Whether to create default Security Group for MSK cluster."
+  description = "Whether to create default Security Group for the MSK cluster."
   default     = true
 }
 
