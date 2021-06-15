@@ -6,47 +6,20 @@ locals {
   bootstrap_brokers_scram         = try(aws_msk_cluster.default[0].bootstrap_brokers_sasl_scram, "")
   bootstrap_brokers_scram_list    = local.bootstrap_brokers_scram != "" ? sort(split(",", local.bootstrap_brokers_scram)) : []
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list)
+  security_group_enabled          = module.this.enabled && var.security_group_enabled
 }
 
-resource "aws_security_group" "default" {
-  count       = module.this.enabled ? 1 : 0
-  vpc_id      = var.vpc_id
-  name        = module.this.id
-  description = "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic"
-  tags        = module.this.tags
-}
+module "security_group" {
+  source  = "cloudposse/security-group/aws"
+  version = "0.3.1"
 
-resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = module.this.enabled ? length(var.security_groups) : 0
-  description              = "Allow inbound traffic from Security Groups"
-  type                     = "ingress"
-  from_port                = 0
-  to_port                  = 65535
-  protocol                 = "tcp"
-  source_security_group_id = var.security_groups[count.index]
-  security_group_id        = join("", aws_security_group.default.*.id)
-}
+  use_name_prefix = var.security_group_use_name_prefix
+  rules           = var.security_group_rules
+  description     = var.security_group_description
+  vpc_id          = var.vpc_id
 
-resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = module.this.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
-  description       = "Allow inbound traffic from CIDR blocks"
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = var.allowed_cidr_blocks
-  security_group_id = join("", aws_security_group.default.*.id)
-}
-
-resource "aws_security_group_rule" "egress" {
-  count             = module.this.enabled ? 1 : 0
-  description       = "Allow all egress traffic"
-  type              = "egress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = join("", aws_security_group.default.*.id)
+  enabled = local.security_group_enabled
+  context = module.this.context
 }
 
 resource "aws_msk_configuration" "config" {
@@ -69,7 +42,7 @@ resource "aws_msk_cluster" "default" {
     instance_type   = var.broker_instance_type
     ebs_volume_size = var.broker_volume_size
     client_subnets  = var.subnet_ids
-    security_groups = aws_security_group.default.*.id
+    security_groups = compact(concat(module.security_group.*.id, var.security_groups))
   }
 
   configuration_info {

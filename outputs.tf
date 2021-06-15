@@ -54,11 +54,16 @@ output "cluster_name" {
 }
 
 output "security_group_id" {
-  description = "The ID of the security group rule"
-  value       = join("", aws_security_group.default.*.id)
+  value       = module.security_group.id
+  description = "MSK cluster Security Group ID"
+}
+
+output "security_group_arn" {
+  value       = module.security_group.arn
+  description = "MSK cluster Security Group ARN"
 }
 
 output "security_group_name" {
-  description = "The name of the security group rule"
-  value       = join("", aws_security_group.default.*.name)
+  value       = module.security_group.name
+  description = "MSK cluster Security Group name"
 }

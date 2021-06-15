@@ -83,11 +83,31 @@ usage: |-
     name                   = "app"
     vpc_id                 = "vpc-XXXXXXXX"
     zone_id                = "Z14EN2YD427LRQ"
-    security_groups        = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
     subnet_ids             = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
     kafka_version          = "2.4.1"
     number_of_broker_nodes = 3
     broker_instance_type   = "kafka.m5.large"
+
+    security_group_rules = [
+      {
+        type                     = "egress"
+        from_port                = 0
+        to_port                  = 65535
+        protocol                 = "-1"
+        cidr_blocks              = ["0.0.0.0/0"]
+        source_security_group_id = null
+        description              = "Allow all outbound traffic"
+      },
+      {
+        type                     = "ingress"
+        from_port                = 0
+        to_port                  = 65535
+        protocol                 = "-1"
+        cidr_blocks              = []
+        source_security_group_id = "sg-XXXXXXXXX"
+        description              = "Allow all inbound traffic from trusted Security Groups"
+      },
+    ]
   }
   ```
 
@@ -104,3 +124,5 @@ contributors:
     github: "osterman"
   - name: "Hugo Samayoa"
     github: "htplbc"
+  - name: Vladimir Syromyatnikov
+    github: SweetOps
