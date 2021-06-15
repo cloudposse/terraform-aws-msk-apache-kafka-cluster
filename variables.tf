@@ -75,7 +75,7 @@ variable "security_group_rules" {
 variable "security_groups" {
   type        = list(string)
   default     = []
-  description = "A list of Security Group IDs to associate with MSK cluster."
+  description = "A list of Security Group IDs to associate with the MSK cluster."
 }
 
 variable "client_broker" {
