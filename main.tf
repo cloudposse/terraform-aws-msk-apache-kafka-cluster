@@ -6,6 +6,8 @@ locals {
   bootstrap_brokers_scram         = try(aws_msk_cluster.default[0].bootstrap_brokers_sasl_scram, "")
   bootstrap_brokers_scram_list    = local.bootstrap_brokers_scram != "" ? sort(split(",", local.bootstrap_brokers_scram)) : []
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list)
+  # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
+  broker_volume_size_max       = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size) 
 }
 
 resource "aws_security_group" "default" {
@@ -138,6 +140,13 @@ resource "aws_msk_cluster" "default" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to ebs_volume_size in favor of autoscaling policy
+      broker_node_group_info[0].ebs_volume_size,
+    ]
+  }
+
   tags = module.this.tags
 }
 
@@ -158,4 +167,29 @@ module "hostname" {
   records = [split(":", local.bootstrap_brokers_combined_list[count.index])[0]]
 
   context = module.this.context
+}
+
+resource "aws_appautoscaling_target" "kafka_storage" {
+  max_capacity       = local.broker_volume_size_max
+  min_capacity       = 1
+  resource_id        = aws_msk_cluster.default[0].arn
+  scalable_dimension = "kafka:broker-storage:VolumeSize"
+  service_namespace  = "kafka"
+}
+
+resource "aws_appautoscaling_policy" "kafka_broker_scaling_policy" {
+  name               = "${aws_msk_cluster.default[0].cluster_name}-broker-scaling"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_msk_cluster.default[0].arn
+  scalable_dimension = aws_appautoscaling_target.kafka_storage.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.kafka_storage.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    disable_scale_in = var.storage_autoscaling_disable_scale_in
+    predefined_metric_specification {
+      predefined_metric_type = "KafkaBrokerStorageUtilization"
+    }
+
+    target_value = var.storage_autoscaling_target_value
+  }
 }
