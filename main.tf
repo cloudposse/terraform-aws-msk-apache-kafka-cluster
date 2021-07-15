@@ -7,7 +7,7 @@ locals {
   bootstrap_brokers_scram_list    = local.bootstrap_brokers_scram != "" ? sort(split(",", local.bootstrap_brokers_scram)) : []
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list)
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
-  broker_volume_size_max       = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size) 
+  broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 }
 
 resource "aws_security_group" "default" {

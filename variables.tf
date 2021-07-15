@@ -176,5 +176,5 @@ variable "storage_autoscaling_max_capacity" {
 variable "storage_autoscaling_disable_scale_in" {
   type        = bool
   default     = false
-  description = "If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource." 
+  description = "If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource."
 }
