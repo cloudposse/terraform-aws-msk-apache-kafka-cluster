@@ -8,14 +8,6 @@ locals {
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list)
 }
 
-resource "aws_security_group" "default" {
-  count       = module.this.enabled ? 1 : 0
-  vpc_id      = var.vpc_id
-  name        = module.this.id
-  description = "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic"
-  tags        = module.this.tags
-}
-
 module "security_group" {
   count               = module.this.enabled ? 1 : 0
   source              = "git@github.com:terraform-aws-modules/terraform-aws-security-group.git//modules/kafka?ref=v4.3.0"
@@ -24,40 +16,8 @@ module "security_group" {
   vpc_id              = var.vpc_id
   ingress_cidr_blocks = var.allowed_ingress_cidr_blocks
   egress_cidr_blocks  = var.allowed_egress_cidr_blocks
+  tags                = module.this.tags
 }
-
-/* resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = module.this.enabled ? length(var.security_groups) : 0
-  description              = "Allow inbound traffic from Security Groups"
-  type                     = "ingress"
-  from_port                = 0
-  to_port                  = 65535
-  protocol                 = "tcp"
-  source_security_group_id = var.security_groups[count.index]
-  security_group_id        = join("", module.security_group.*.id)
-}
-
-resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = module.this.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
-  description       = "Allow inbound traffic from CIDR blocks"
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = var.allowed_cidr_blocks
-  security_group_id = join("", module.security_group.*.id)
-}
-
-resource "aws_security_group_rule" "egress" {
-  count             = module.this.enabled ? 1 : 0
-  description       = "Allow all egress traffic"
-  type              = "egress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = join("", module.security_group.*.id)
-} */
 
 resource "aws_msk_configuration" "config" {
   count          = module.this.enabled ? 1 : 0
@@ -79,7 +39,7 @@ resource "aws_msk_cluster" "default" {
     instance_type   = var.broker_instance_type
     ebs_volume_size = var.broker_volume_size
     client_subnets  = var.subnet_ids
-    security_groups = module.security_group.*.id
+    security_groups = module.security_group.*.security_group_id
   }
 
   configuration_info {

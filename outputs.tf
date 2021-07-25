@@ -55,10 +55,10 @@ output "cluster_name" {
 
 output "security_group_id" {
   description = "The ID of the security group rule"
-  value       = join("", module.security_group.*.id)
+  value       = join("", module.security_group.*.security_group_id)
 }
 
 output "security_group_name" {
   description = "The name of the security group rule"
-  value       = join("", module.security_group.*.name)
+  value       = join("", module.security_group.*.security_group_name)
 }
