@@ -55,10 +55,10 @@ output "cluster_name" {
 
 output "security_group_id" {
   description = "The ID of the security group rule"
-  value       = join("", aws_security_group.default.*.id)
+  value       = join("", module.security_group.*.id)
 }
 
 output "security_group_name" {
   description = "The name of the security group rule"
-  value       = join("", aws_security_group.default.*.name)
+  value       = join("", module.security_group.*.name)
 }

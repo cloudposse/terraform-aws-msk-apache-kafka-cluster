@@ -16,7 +16,17 @@ resource "aws_security_group" "default" {
   tags        = module.this.tags
 }
 
-resource "aws_security_group_rule" "ingress_security_groups" {
+module "security_group" {
+  count               = module.this.enabled ? 1 : 0
+  source              = "git@github.com:terraform-aws-modules/terraform-aws-security-group.git//modules/kafka?ref=v4.3.0"
+  name                = module.this.id
+  description         = "Security group with only Kafka ports exposed."
+  vpc_id              = var.vpc_id
+  ingress_cidr_blocks = var.allowed_ingress_cidr_blocks
+  egress_cidr_blocks  = var.allowed_egress_cidr_blocks
+}
+
+/* resource "aws_security_group_rule" "ingress_security_groups" {
   count                    = module.this.enabled ? length(var.security_groups) : 0
   description              = "Allow inbound traffic from Security Groups"
   type                     = "ingress"
@@ -24,7 +34,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
   to_port                  = 65535
   protocol                 = "tcp"
   source_security_group_id = var.security_groups[count.index]
-  security_group_id        = join("", aws_security_group.default.*.id)
+  security_group_id        = join("", module.security_group.*.id)
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
@@ -35,7 +45,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
   to_port           = 65535
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidr_blocks
-  security_group_id = join("", aws_security_group.default.*.id)
+  security_group_id = join("", module.security_group.*.id)
 }
 
 resource "aws_security_group_rule" "egress" {
@@ -46,8 +56,8 @@ resource "aws_security_group_rule" "egress" {
   to_port           = 65535
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = join("", aws_security_group.default.*.id)
-}
+  security_group_id = join("", module.security_group.*.id)
+} */
 
 resource "aws_msk_configuration" "config" {
   count          = module.this.enabled ? 1 : 0
@@ -69,7 +79,7 @@ resource "aws_msk_cluster" "default" {
     instance_type   = var.broker_instance_type
     ebs_volume_size = var.broker_volume_size
     client_subnets  = var.subnet_ids
-    security_groups = aws_security_group.default.*.id
+    security_groups = module.security_group.*.id
   }
 
   configuration_info {
