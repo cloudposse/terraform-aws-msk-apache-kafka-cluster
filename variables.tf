@@ -41,10 +41,16 @@ variable "security_groups" {
   description = "List of security group IDs to be allowed to connect to the cluster"
 }
 
-variable "allowed_cidr_blocks" {
+variable "allowed_ingress_cidr_blocks" {
   type        = list(string)
   default     = []
-  description = "List of CIDR blocks to be allowed to connect to the cluster"
+  description = "List of ingress CIDR blocks to be allowed to connect to the cluster"
+}
+
+variable "allowed_egress_cidr_blocks" {
+  type        = list(string)
+  default     = []
+  description = "List of egress CIDR blocks to be allowed to connect to the cluster"
 }
 
 variable "client_broker" {
