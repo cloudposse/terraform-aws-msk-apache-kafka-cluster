@@ -44,4 +44,6 @@ module "kafka" {
   name = "${module.this.name}${module.this.delimiter}${try(random_id.config_id[0].hex, "")}"
 
   context = module.this.context
+
+  prevent_destroy = true
 }

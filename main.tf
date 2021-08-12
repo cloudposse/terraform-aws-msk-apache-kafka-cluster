@@ -56,6 +56,10 @@ resource "aws_msk_configuration" "config" {
   description    = "Manages an Amazon Managed Streaming for Kafka configuration"
 
   server_properties = join("\n", [for k in keys(var.properties) : format("%s = %s", k, var.properties[k])])
+
+  lifecycle {
+    prevent_destroy = var.prevent_destroy
+  }
 }
 
 resource "aws_msk_cluster" "default" {
@@ -139,6 +143,10 @@ resource "aws_msk_cluster" "default" {
   }
 
   tags = module.this.tags
+
+  lifecycle {
+    prevent_destroy = var.prevent_destroy
+  }
 }
 
 resource "aws_msk_scram_secret_association" "default" {

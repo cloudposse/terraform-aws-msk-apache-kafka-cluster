@@ -160,3 +160,9 @@ variable "properties" {
   default     = {}
   description = "Contents of the server.properties file. Supported properties are documented in the [MSK Developer Guide](https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html)"
 }
+
+variable "prevent_destroy" {
+  type        = bool
+  default     = false
+  description = "Prevent destruction of the MSK cluster and configuration"
+}
