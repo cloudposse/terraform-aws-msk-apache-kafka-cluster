@@ -7,7 +7,6 @@ locals {
   bootstrap_brokers_scram_list    = local.bootstrap_brokers_scram != "" ? sort(split(",", local.bootstrap_brokers_scram)) : []
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list)
   bootstrap_brokers_count         = length(local.bootstrap_brokers_combined_list)
-  bootstrap_brokers_map           = { for broker in local.bootstrap_brokers_combined_list : index(local.bootstrap_brokers_combined_list, broker) => broker }
 }
 
 resource "aws_security_group" "default" {
@@ -151,15 +150,15 @@ resource "aws_msk_scram_secret_association" "default" {
 }
 
 module "hostname" {
-  for_each = var.number_of_broker_nodes > 0 && var.zone_id != null ? local.bootstrap_brokers_map : {}
+  count   = var.number_of_broker_nodes > 0 && var.zone_id != null ? var.number_of_broker_nodes : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.0"
 
-  enabled = module.this.enabled && length(var.zone_id) > 0
-  name    = "${module.this.name}-broker-${each.key + 1}"
+  enabled = module.this.enabled && length(var.zone_id) > 0 && try(local.bootstrap_brokers_combined_list[count.index]) != null, false)
+  name    = "${module.this.name}-broker-${count.index + 1}"
   zone_id = var.zone_id
-  records = [split(":", each.value)[0]]
+  records = try([split(":", local.bootstrap_brokers_combined_list[count.index])[0]], [])
 
   context = module.this.context
 }
