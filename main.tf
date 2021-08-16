@@ -10,7 +10,7 @@ locals {
 }
 
 data "aws_subnet" "existing" {
-  for_each = module.this.enabled ? toset(var.subnet_ids) : {}
+  for_each = module.this.enabled ? toset(var.subnet_ids) : toset([])
 
   id = each.value
 }
