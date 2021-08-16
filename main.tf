@@ -6,7 +6,6 @@ locals {
   bootstrap_brokers_scram         = try(aws_msk_cluster.default[0].bootstrap_brokers_sasl_scram, "")
   bootstrap_brokers_scram_list    = local.bootstrap_brokers_scram != "" ? sort(split(",", local.bootstrap_brokers_scram)) : []
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list)
-  bootstrap_brokers_count         = length(local.bootstrap_brokers_combined_list)
 }
 
 resource "aws_security_group" "default" {
@@ -155,10 +154,10 @@ module "hostname" {
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.0"
 
-  enabled = module.this.enabled && length(var.zone_id) > 0 && try(local.bootstrap_brokers_combined_list[count.index] != null, false)
+  enabled = module.this.enabled && length(var.zone_id) > 0
   name    = "${module.this.name}-broker-${count.index + 1}"
   zone_id = var.zone_id
-  records = try([split(":", local.bootstrap_brokers_combined_list[count.index])[0]], [])
+  records = [split(":", element(local.bootstrap_brokers_combined_list, count.index))[0]]
 
   context = module.this.context
 }
