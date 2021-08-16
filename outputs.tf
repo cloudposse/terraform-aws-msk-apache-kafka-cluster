@@ -45,7 +45,7 @@ output "latest_revision" {
 
 output "hostname" {
   description = "MSK Cluster Broker DNS hostname"
-  value       = join("", module.hostname.*.hostname)
+  value       = [ for broker in module.hostname : broker.hostname ]
 }
 
 output "cluster_name" {
