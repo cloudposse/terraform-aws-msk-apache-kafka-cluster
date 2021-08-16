@@ -155,7 +155,7 @@ module "hostname" {
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.0"
 
-  enabled = module.this.enabled && length(var.zone_id) > 0 && try(local.bootstrap_brokers_combined_list[count.index]) != null, false)
+  enabled = module.this.enabled && length(var.zone_id) > 0 && try(local.bootstrap_brokers_combined_list[count.index] != null, false)
   name    = "${module.this.name}-broker-${count.index + 1}"
   zone_id = var.zone_id
   records = try([split(":", local.bootstrap_brokers_combined_list[count.index])[0]], [])
