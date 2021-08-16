@@ -102,7 +102,10 @@ Here's how to invoke this example module in your projects
 
 ```hcl
 module "kafka" {
-  source                 = "https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster.git?ref=master"
+  source = "cloudposse/apache-kafka-cluster/aws"
+  # Cloud Posse recommends pinning every module to a specific version
+  # version = "x.x.x"
+
   namespace              = "eg"
   stage                  = "prod"
   name                   = "app"
@@ -111,7 +114,7 @@ module "kafka" {
   security_groups        = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
   subnet_ids             = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
   kafka_version          = "2.4.1"
-  number_of_broker_nodes = 3
+  number_of_broker_nodes = 2 # this has to be a multiple of the # of subnet_ids
   broker_instance_type   = "kafka.m5.large"
 }
 ```
@@ -401,14 +404,16 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 ### Contributors
 
 <!-- markdownlint-disable -->
-|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Hugo Samayoa][htplbc_avatar]][htplbc_homepage]<br/>[Hugo Samayoa][htplbc_homepage] |
-|---|---|
+|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Hugo Samayoa][htplbc_avatar]][htplbc_homepage]<br/>[Hugo Samayoa][htplbc_homepage] | [![RB][nitrocode_avatar]][nitrocode_homepage]<br/>[RB][nitrocode_homepage] |
+|---|---|---|
 <!-- markdownlint-restore -->
 
   [osterman_homepage]: https://github.com/osterman
   [osterman_avatar]: https://img.cloudposse.com/150x150/https://github.com/osterman.png
   [htplbc_homepage]: https://github.com/htplbc
   [htplbc_avatar]: https://img.cloudposse.com/150x150/https://github.com/htplbc.png
+  [nitrocode_homepage]: https://github.com/nitrocode
+  [nitrocode_avatar]: https://img.cloudposse.com/150x150/https://github.com/nitrocode.png
 
 [![README Footer][readme_footer_img]][readme_footer_link]
 [![Beacon][beacon]][website]
