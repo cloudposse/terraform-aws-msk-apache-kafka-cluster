@@ -144,20 +144,22 @@ resource "aws_msk_cluster" "default" {
 }
 
 resource "aws_msk_scram_secret_association" "default" {
-  count = var.client_sasl_scram_enabled ? 1 : 0
+  count = module.this.enabled && var.client_sasl_scram_enabled ? 1 : 0
 
   cluster_arn     = aws_msk_cluster.default[0].arn
   secret_arn_list = var.client_sasl_scram_secret_association_arns
 }
 
 module "hostname" {
-  count   = (var.number_of_broker_nodes > 0) && (var.zone_id != null) ? var.number_of_broker_nodes : 0
+  count = var.number_of_broker_nodes > 0 && var.zone_id != null ? var.number_of_broker_nodes : 0
+
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.0"
+
   enabled = module.this.enabled && length(var.zone_id) > 0
   name    = "${module.this.name}-broker-${count.index + 1}"
   zone_id = var.zone_id
-  records = [split(":", local.bootstrap_brokers_combined_list[count.index])[0]]
+  records = [split(":", element(local.bootstrap_brokers_combined_list, count.index))[0]]
 
   context = module.this.context
 }
