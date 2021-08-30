@@ -102,7 +102,7 @@ Here's how to invoke this example module in your projects
 
 ```hcl
 module "kafka" {
-  source = "cloudposse/msk-apache-kafka-cluster/aws"
+  source = "cloudposse/apache-kafka-cluster/aws"
   # Cloud Posse recommends pinning every module to a specific version
   # version = "x.x.x"
 
