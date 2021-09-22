@@ -239,7 +239,7 @@ Available targets:
 | <a name="output_cluster_name"></a> [cluster\_name](#output\_cluster\_name) | MSK Cluster name |
 | <a name="output_config_arn"></a> [config\_arn](#output\_config\_arn) | Amazon Resource Name (ARN) of the configuration |
 | <a name="output_current_version"></a> [current\_version](#output\_current\_version) | Current version of the MSK Cluster used for updates |
-| <a name="output_hostname"></a> [hostname](#output\_hostname) | MSK Cluster Broker DNS hostname |
+| <a name="output_hostname"></a> [hostname](#output\_hostname) | Comma separated list of one or more MSK Cluster Broker DNS hostname |
 | <a name="output_latest_revision"></a> [latest\_revision](#output\_latest\_revision) | Latest revision of the configuration |
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | The ID of the security group rule |
 | <a name="output_security_group_name"></a> [security\_group\_name](#output\_security\_group\_name) | The name of the security group rule |
