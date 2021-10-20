@@ -173,8 +173,8 @@ variable "storage_autoscaling_max_capacity" {
   description = "Maximum size autoscaling policy can scale storage. Defaults to broker_volume_size"
 }
 
-variable "storage_autoscaling_disable_scale_in" {
+variable "storage_autoscaling_scale_in_enabled" {
   type        = bool
-  default     = false
-  description = "If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource."
+  default     = true
+  description = "If the value is false, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource."
 }
