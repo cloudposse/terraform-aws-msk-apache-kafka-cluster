@@ -77,7 +77,10 @@ usage: |-
 
   ```hcl
   module "kafka" {
-    source                 = "https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster.git?ref=master"
+    source = "cloudposse/apache-kafka-cluster/aws"
+    # Cloud Posse recommends pinning every module to a specific version
+    # version = "x.x.x"
+
     namespace              = "eg"
     stage                  = "prod"
     name                   = "app"
@@ -86,7 +89,7 @@ usage: |-
     security_groups        = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
     subnet_ids             = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
     kafka_version          = "2.4.1"
-    number_of_broker_nodes = 3
+    number_of_broker_nodes = 2 # this has to be a multiple of the # of subnet_ids
     broker_instance_type   = "kafka.m5.large"
   }
   ```
@@ -104,3 +107,5 @@ contributors:
     github: "osterman"
   - name: "Hugo Samayoa"
     github: "htplbc"
+  - name: "RB"
+    github: "nitrocode"

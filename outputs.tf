@@ -44,8 +44,8 @@ output "latest_revision" {
 }
 
 output "hostname" {
-  description = "MSK Cluster Broker DNS hostname"
-  value       = join("", module.hostname.*.hostname)
+  description = "Comma separated list of one or more MSK Cluster Broker DNS hostname"
+  value       = join(",", module.hostname.*.hostname)
 }
 
 output "cluster_name" {
