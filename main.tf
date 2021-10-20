@@ -10,7 +10,6 @@ locals {
   bootstrap_brokers_iam           = try(aws_msk_cluster.default[0].bootstrap_brokers_sasl_iam, "")
   bootstrap_brokers_iam_list      = local.bootstrap_brokers_iam != "" ? sort(split(",", local.bootstrap_brokers_iam)) : []
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list, local.bootstrap_brokers_iam_list)
-  bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list)
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 }
