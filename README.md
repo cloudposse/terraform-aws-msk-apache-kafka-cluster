@@ -411,8 +411,8 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 ### Contributors
 
 <!-- markdownlint-disable -->
-|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Hugo Samayoa][htplbc_avatar]][htplbc_homepage]<br/>[Hugo Samayoa][htplbc_homepage] | [![RB][nitrocode_avatar]][nitrocode_homepage]<br/>[RB][nitrocode_homepage] |
-|---|---|---|
+|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Hugo Samayoa][htplbc_avatar]][htplbc_homepage]<br/>[Hugo Samayoa][htplbc_homepage] | [![RB][nitrocode_avatar]][nitrocode_homepage]<br/>[RB][nitrocode_homepage] | [![Yonatan Koren][korenyoni_avatar]][korenyoni_homepage]<br/>[Yonatan Koren][korenyoni_homepage] |
+|---|---|---|---|
 <!-- markdownlint-restore -->
 
   [osterman_homepage]: https://github.com/osterman
@@ -421,6 +421,8 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
   [htplbc_avatar]: https://img.cloudposse.com/150x150/https://github.com/htplbc.png
   [nitrocode_homepage]: https://github.com/nitrocode
   [nitrocode_avatar]: https://img.cloudposse.com/150x150/https://github.com/nitrocode.png
+  [korenyoni_homepage]: https://github.com/korenyoni
+  [korenyoni_avatar]: https://img.cloudposse.com/150x150/https://github.com/korenyoni.png
 
 [![README Footer][readme_footer_img]][readme_footer_link]
 [![Beacon][beacon]][website]
