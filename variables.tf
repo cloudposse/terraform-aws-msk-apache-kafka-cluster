@@ -160,3 +160,21 @@ variable "properties" {
   default     = {}
   description = "Contents of the server.properties file. Supported properties are documented in the [MSK Developer Guide](https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html)"
 }
+
+variable "storage_autoscaling_target_value" {
+  type        = number
+  default     = 60
+  description = "Percentage of storage used to trigger autoscaled storage increase"
+}
+
+variable "storage_autoscaling_max_capacity" {
+  type        = number
+  default     = null
+  description = "Maximum size the autoscaling policy can scale storage. Defaults to `broker_volume_size`"
+}
+
+variable "storage_autoscaling_disable_scale_in" {
+  type        = bool
+  default     = false
+  description = "If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource."
+}
