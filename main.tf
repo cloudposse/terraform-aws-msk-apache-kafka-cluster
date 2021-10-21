@@ -167,10 +167,10 @@ module "hostname" {
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
 
-  enabled = module.this.enabled && length(var.zone_id) > 0
-  name    = "${module.this.name}-broker-${count.index + 1}"
-  zone_id = var.zone_id
-  records = [split(":", element(local.bootstrap_brokers_combined_list, count.index))[0]]
+  enabled  = module.this.enabled && length(var.zone_id) > 0
+  dns_name = "${module.this.name}-broker-${count.index + 1}"
+  zone_id  = var.zone_id
+  records  = [split(":", element(local.bootstrap_brokers_combined_list, count.index))[0]]
 
   context = module.this.context
 }
