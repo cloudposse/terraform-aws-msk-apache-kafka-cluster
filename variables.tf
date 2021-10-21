@@ -170,7 +170,7 @@ variable "storage_autoscaling_target_value" {
 variable "storage_autoscaling_max_capacity" {
   type        = number
   default     = null
-  description = "Maximum size autoscaling policy can scale storage. Defaults to broker_volume_size"
+  description = "Maximum size the autoscaling policy can scale storage. Defaults to `broker_volume_size`"
 }
 
 variable "storage_autoscaling_disable_scale_in" {
