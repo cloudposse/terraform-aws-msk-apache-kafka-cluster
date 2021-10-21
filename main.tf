@@ -186,7 +186,7 @@ resource "aws_appautoscaling_target" "default" {
 }
 
 resource "aws_appautoscaling_policy" "default" {
-  count = module.this.enabled ? 1 : 0
+  count = local.enabled ? 1 : 0
 
   name               = "${aws_msk_cluster.default[0].cluster_name}-broker-scaling"
   policy_type        = "TargetTrackingScaling"
