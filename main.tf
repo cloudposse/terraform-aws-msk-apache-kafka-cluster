@@ -1,4 +1,6 @@
 locals {
+  enabled = module.this.enabled
+
   bootstrap_brokers               = try(aws_msk_cluster.default[0].bootstrap_brokers, "")
   bootstrap_brokers_list          = local.bootstrap_brokers != "" ? sort(split(",", local.bootstrap_brokers)) : []
   bootstrap_brokers_tls           = try(aws_msk_cluster.default[0].bootstrap_brokers_tls, "")
@@ -8,10 +10,12 @@ locals {
   bootstrap_brokers_iam           = try(aws_msk_cluster.default[0].bootstrap_brokers_sasl_iam, "")
   bootstrap_brokers_iam_list      = local.bootstrap_brokers_iam != "" ? sort(split(",", local.bootstrap_brokers_iam)) : []
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list, local.bootstrap_brokers_iam_list)
+  # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
+  broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 }
 
 resource "aws_security_group" "default" {
-  count       = module.this.enabled ? 1 : 0
+  count       = local.enabled ? 1 : 0
   vpc_id      = var.vpc_id
   name        = module.this.id
   description = "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic"
@@ -19,7 +23,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = module.this.enabled ? length(var.security_groups) : 0
+  count                    = local.enabled ? length(var.security_groups) : 0
   description              = "Allow inbound traffic from Security Groups"
   type                     = "ingress"
   from_port                = 0
@@ -30,7 +34,7 @@ resource "aws_security_group_rule" "ingress_security_groups" {
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = module.this.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
+  count             = local.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
   description       = "Allow inbound traffic from CIDR blocks"
   type              = "ingress"
   from_port         = 0
@@ -41,7 +45,7 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
 }
 
 resource "aws_security_group_rule" "egress" {
-  count             = module.this.enabled ? 1 : 0
+  count             = local.enabled ? 1 : 0
   description       = "Allow all egress traffic"
   type              = "egress"
   from_port         = 0
@@ -52,7 +56,7 @@ resource "aws_security_group_rule" "egress" {
 }
 
 resource "aws_msk_configuration" "config" {
-  count          = module.this.enabled ? 1 : 0
+  count          = local.enabled ? 1 : 0
   kafka_versions = [var.kafka_version]
   name           = module.this.id
   description    = "Manages an Amazon Managed Streaming for Kafka configuration"
@@ -61,7 +65,7 @@ resource "aws_msk_configuration" "config" {
 }
 
 resource "aws_msk_cluster" "default" {
-  count                  = module.this.enabled ? 1 : 0
+  count                  = local.enabled ? 1 : 0
   cluster_name           = module.this.id
   kafka_version          = var.kafka_version
   number_of_broker_nodes = var.number_of_broker_nodes
@@ -140,11 +144,18 @@ resource "aws_msk_cluster" "default" {
     }
   }
 
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to ebs_volume_size in favor of autoscaling policy
+      broker_node_group_info[0].ebs_volume_size,
+    ]
+  }
+
   tags = module.this.tags
 }
 
 resource "aws_msk_scram_secret_association" "default" {
-  count = module.this.enabled && var.client_sasl_scram_enabled ? 1 : 0
+  count = local.enabled && var.client_sasl_scram_enabled ? 1 : 0
 
   cluster_arn     = aws_msk_cluster.default[0].arn
   secret_arn_list = var.client_sasl_scram_secret_association_arns
@@ -154,7 +165,7 @@ module "hostname" {
   count = var.number_of_broker_nodes > 0 && var.zone_id != null ? var.number_of_broker_nodes : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.0"
+  version = "0.12.2"
 
   enabled = module.this.enabled && length(var.zone_id) > 0
   name    = "${module.this.name}-broker-${count.index + 1}"
@@ -162,4 +173,33 @@ module "hostname" {
   records = [split(":", element(local.bootstrap_brokers_combined_list, count.index))[0]]
 
   context = module.this.context
+}
+
+resource "aws_appautoscaling_target" "default" {
+  count = local.enabled ? 1 : 0
+
+  max_capacity       = local.broker_volume_size_max
+  min_capacity       = 1
+  resource_id        = aws_msk_cluster.default[0].arn
+  scalable_dimension = "kafka:broker-storage:VolumeSize"
+  service_namespace  = "kafka"
+}
+
+resource "aws_appautoscaling_policy" "default" {
+  count = local.enabled ? 1 : 0
+
+  name               = "${aws_msk_cluster.default[0].cluster_name}-broker-scaling"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_msk_cluster.default[0].arn
+  scalable_dimension = join("", aws_appautoscaling_target.default.*.scalable_dimension)
+  service_namespace  = join("", aws_appautoscaling_target.default.*.service_namespace)
+
+  target_tracking_scaling_policy_configuration {
+    disable_scale_in = var.storage_autoscaling_disable_scale_in
+    predefined_metric_specification {
+      predefined_metric_type = "KafkaBrokerStorageUtilization"
+    }
+
+    target_value = var.storage_autoscaling_target_value
+  }
 }

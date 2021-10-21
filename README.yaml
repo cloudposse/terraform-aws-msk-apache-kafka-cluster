@@ -77,7 +77,7 @@ usage: |-
 
   ```hcl
   module "kafka" {
-    source = "cloudposse/apache-kafka-cluster/aws"
+    source = "cloudposse/msk-apache-kafka-cluster/aws"
     # Cloud Posse recommends pinning every module to a specific version
     # version = "x.x.x"
 
