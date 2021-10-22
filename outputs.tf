@@ -5,22 +5,22 @@ output "cluster_arn" {
 
 output "bootstrap_brokers" {
   description = "A comma separated list of one or more hostname:port pairs of kafka brokers suitable to boostrap connectivity to the kafka cluster"
-  value       = join("", aws_msk_cluster.default.*.bootstrap_brokers)
+  value       = join(",", aws_msk_cluster.default.*.bootstrap_brokers)
 }
 
 output "bootstrap_broker_tls" {
   description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity to the kafka cluster"
-  value       = join("", aws_msk_cluster.default.*.bootstrap_brokers_tls)
+  value       = join(",", aws_msk_cluster.default.*.bootstrap_brokers_tls)
 }
 
 output "bootstrap_brokers_scram" {
   description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity using SASL/SCRAM to the kafka cluster."
-  value       = join("", aws_msk_cluster.default.*.bootstrap_brokers_sasl_scram)
+  value       = join(",", aws_msk_cluster.default.*.bootstrap_brokers_sasl_scram)
 }
 
 output "bootstrap_brokers_iam" {
   description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity using SASL/IAM to the kafka cluster."
-  value       = join("", aws_msk_cluster.default.*.bootstrap_brokers_sasl_iam)
+  value       = join(",", aws_msk_cluster.default.*.bootstrap_brokers_sasl_iam)
 }
 
 output "current_version" {
@@ -30,7 +30,7 @@ output "current_version" {
 
 output "zookeeper_connect_string" {
   description = "A comma separated list of one or more hostname:port pairs to use to connect to the Apache Zookeeper cluster"
-  value       = join("", aws_msk_cluster.default.*.zookeeper_connect_string)
+  value       = join(",", aws_msk_cluster.default.*.zookeeper_connect_string)
 }
 
 output "config_arn" {
