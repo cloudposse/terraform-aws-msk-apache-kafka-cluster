@@ -12,6 +12,69 @@ locals {
   bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list, local.bootstrap_brokers_iam_list)
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
+
+  # var.client_broker types
+  plaintext = "PLAINTEXT"
+  tls_plaintext = "TLS_PLAINTEXT"
+  tls = "TLS"
+
+  # The following ports are not configurable. See: https://docs.aws.amazon.com/msk/latest/developerguide/client-access.html#port-info
+  protocols = [
+    {
+      name    = "plaintext"
+      # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#bootstrap_brokers
+      enabled = contains([local.plaintext, local.tls_plaintext], var.client_broker)
+      port    = 9092
+    },
+    {
+      name    = "tls"
+      # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#bootstrap_brokers_tls
+      enabled = contains([local.tls_plaintext, local.tls], var.client_broker)
+      port    = 9094
+    },
+    {
+      name    = "SASL/SCRAM"
+      # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#bootstrap_brokers_sasl_scram
+      enabled = var.client_sasl_scram_enabled && contains([local.tls_plaintext, local.tls], var.client_broker)
+      port    = 9096
+    },
+    {
+      name    = "SASL/IAM"
+      # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#bootstrap_brokers_sasl_iam
+      enabled = var.client_sasl_iam_enabled && contains([local.tls_plaintext, local.tls], var.client_broker)
+      port    = 9098
+    },
+    # The following two protocols are always enabled.
+    # See: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#zookeeper_connect_string
+    # and https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#zookeeper_connect_string_tls
+    {
+      name    = "Zookeeper plaintext"
+      enabled = true
+      port    = 2181
+    },
+    {
+      name    = "Zookeeper TLS"
+      enabled = true
+      port    = 2182
+    }
+  ]
+
+  sg_based_rules = local.enabled && length(var.security_groups) > 0 ? flatten([
+    for sg in var.security_groups : [for protocol in local.protocols :
+      {
+        description              = "Allow inbound ${protocol.name} traffic from Security Group ${sg}"
+        source_security_group_id = sg
+        port                     = protocol.port
+      } if protocol.enabled
+  ]]) : []
+
+  cidr_based_rules = local.enabled && length(var.allowed_cidr_blocks) > 0 ? [
+    for protocol in local.protocols : {
+      description = "Allow inbound ${protocol.name} traffic from CIDR Blocks"
+      cidr_blocks = var.allowed_cidr_blocks
+      port        = protocol.port
+    } if protocol.enabled
+  ] : []
 }
 
 resource "aws_security_group" "default" {
@@ -23,24 +86,24 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = local.enabled ? length(var.security_groups) : 0
-  description              = "Allow inbound traffic from Security Groups"
+  count                    = local.enabled ? length(local.sg_based_rules) : 0
+  description              = local.sg_based_rules[count.index].description
   type                     = "ingress"
-  from_port                = 0
-  to_port                  = 65535
+  from_port                = local.sg_based_rules[count.index].port
+  to_port                  = local.sg_based_rules[count.index].port
   protocol                 = "tcp"
-  source_security_group_id = var.security_groups[count.index]
+  source_security_group_id = local.sg_based_rules[count.index].source_security_group_id
   security_group_id        = join("", aws_security_group.default.*.id)
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = local.enabled && length(var.allowed_cidr_blocks) > 0 ? 1 : 0
-  description       = "Allow inbound traffic from CIDR blocks"
+  count             = local.enabled ? length(local.cidr_based_rules) : 0
+  description       = local.sg_based_rules[count.index].description
   type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
+  from_port         = local.cidr_based_rules[count.index].port
+  to_port           = local.cidr_based_rules[count.index].port
   protocol          = "tcp"
-  cidr_blocks       = var.allowed_cidr_blocks
+  cidr_blocks       = local.cidr_based_rules[count.index].cidr_blocks
   security_group_id = join("", aws_security_group.default.*.id)
 }
 
@@ -65,7 +128,7 @@ resource "aws_msk_configuration" "config" {
 }
 
 resource "aws_msk_cluster" "default" {
-  #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true 
+  #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true
   count                  = local.enabled ? 1 : 0
   cluster_name           = module.this.id
   kafka_version          = var.kafka_version
