@@ -65,6 +65,7 @@ resource "aws_msk_configuration" "config" {
 }
 
 resource "aws_msk_cluster" "default" {
+  #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true 
   count                  = local.enabled ? 1 : 0
   cluster_name           = module.this.id
   kafka_version          = var.kafka_version
