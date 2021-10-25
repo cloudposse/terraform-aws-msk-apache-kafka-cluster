@@ -41,6 +41,12 @@ variable "security_groups" {
   description = "List of security group IDs to be allowed to connect to the cluster"
 }
 
+variable "broker_node_security_groups" {
+  type        = list(string)
+  default     = []
+  description = "List of broker node security group IDs to be associated with the elastic network interfaces to control who can communicate with the cluster"
+}
+
 variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []
