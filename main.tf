@@ -75,7 +75,7 @@ resource "aws_msk_cluster" "default" {
     instance_type   = var.broker_instance_type
     ebs_volume_size = var.broker_volume_size
     client_subnets  = var.subnet_ids
-    security_groups = aws_security_group.default.*.id
+    security_groups = concat(var.broker_node_security_groups, aws_security_group.default.*.id)
   }
 
   configuration_info {
