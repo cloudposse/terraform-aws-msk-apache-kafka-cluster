@@ -14,108 +14,79 @@ locals {
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 
   # var.client_broker types
-  plaintext = "PLAINTEXT"
+  plaintext     = "PLAINTEXT"
   tls_plaintext = "TLS_PLAINTEXT"
-  tls = "TLS"
+  tls           = "TLS"
 
   # The following ports are not configurable. See: https://docs.aws.amazon.com/msk/latest/developerguide/client-access.html#port-info
-  protocols = [
-    {
-      name    = "plaintext"
+  protocols = {
+    plaintext = {
+      name = "plaintext"
       # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#bootstrap_brokers
       enabled = contains([local.plaintext, local.tls_plaintext], var.client_broker)
       port    = 9092
-    },
-    {
-      name    = "tls"
+    }
+    tls = {
+      name = "TLS"
       # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#bootstrap_brokers_tls
       enabled = contains([local.tls_plaintext, local.tls], var.client_broker)
       port    = 9094
-    },
-    {
-      name    = "SASL/SCRAM"
+    }
+    sasl_scram = {
+      name = "SASL/SCRAM"
       # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#bootstrap_brokers_sasl_scram
       enabled = var.client_sasl_scram_enabled && contains([local.tls_plaintext, local.tls], var.client_broker)
       port    = 9096
-    },
-    {
-      name    = "SASL/IAM"
+    }
+    sasl_iam = {
+      name = "SASL/IAM"
       # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#bootstrap_brokers_sasl_iam
       enabled = var.client_sasl_iam_enabled && contains([local.tls_plaintext, local.tls], var.client_broker)
       port    = 9098
-    },
+    }
     # The following two protocols are always enabled.
     # See: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#zookeeper_connect_string
     # and https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#zookeeper_connect_string_tls
-    {
+    zookeeper_plaintext = {
       name    = "Zookeeper plaintext"
       enabled = true
       port    = 2181
-    },
-    {
+    }
+    zookeeper_tls = {
       name    = "Zookeeper TLS"
       enabled = true
       port    = 2182
     }
+  }
+}
+
+module "broker_security_group" {
+  source  = "cloudposse/security-group/aws"
+  version = "0.4.2"
+
+  attributes = ["broker"]
+
+  security_group_description = "Allow inbound MSK-related traffic from Security Groups and CIDRs. Allow all outbound traffic"
+  allow_all_egress           = true
+  rule_matrix = [
+    {
+      source_security_group_ids = var.security_groups
+      cidr_blocks               = var.allowed_cidr_blocks
+      rules = [
+        for protocol_key, protocol in local.protocols : {
+          key         = protocol_key
+          type        = "ingress"
+          from_port   = protocol.port
+          to_port     = protocol.port
+          protocol    = "tcp"
+          description = "Allow inbound ${protocol.name} traffic"
+        } if protocol.enabled
+      ]
+    }
   ]
+  vpc_id = var.vpc_id
 
-  sg_based_rules = local.enabled && length(var.security_groups) > 0 ? flatten([
-    for sg in var.security_groups : [for protocol in local.protocols :
-      {
-        description              = "Allow inbound ${protocol.name} traffic from Security Group ${sg}"
-        source_security_group_id = sg
-        port                     = protocol.port
-      } if protocol.enabled
-  ]]) : []
-
-  cidr_based_rules = local.enabled && length(var.allowed_cidr_blocks) > 0 ? [
-    for protocol in local.protocols : {
-      description = "Allow inbound ${protocol.name} traffic from CIDR Blocks"
-      cidr_blocks = var.allowed_cidr_blocks
-      port        = protocol.port
-    } if protocol.enabled
-  ] : []
-}
-
-resource "aws_security_group" "default" {
-  count       = local.enabled ? 1 : 0
-  vpc_id      = var.vpc_id
-  name        = module.this.id
-  description = "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic"
-  tags        = module.this.tags
-}
-
-resource "aws_security_group_rule" "ingress_security_groups" {
-  count                    = local.enabled ? length(local.sg_based_rules) : 0
-  description              = local.sg_based_rules[count.index].description
-  type                     = "ingress"
-  from_port                = local.sg_based_rules[count.index].port
-  to_port                  = local.sg_based_rules[count.index].port
-  protocol                 = "tcp"
-  source_security_group_id = local.sg_based_rules[count.index].source_security_group_id
-  security_group_id        = join("", aws_security_group.default.*.id)
-}
-
-resource "aws_security_group_rule" "ingress_cidr_blocks" {
-  count             = local.enabled ? length(local.cidr_based_rules) : 0
-  description       = local.sg_based_rules[count.index].description
-  type              = "ingress"
-  from_port         = local.cidr_based_rules[count.index].port
-  to_port           = local.cidr_based_rules[count.index].port
-  protocol          = "tcp"
-  cidr_blocks       = local.cidr_based_rules[count.index].cidr_blocks
-  security_group_id = join("", aws_security_group.default.*.id)
-}
-
-resource "aws_security_group_rule" "egress" {
-  count             = local.enabled ? 1 : 0
-  description       = "Allow all egress traffic"
-  type              = "egress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = join("", aws_security_group.default.*.id)
+  context = module.this.context
 }
 
 resource "aws_msk_configuration" "config" {
@@ -139,7 +110,7 @@ resource "aws_msk_cluster" "default" {
     instance_type   = var.broker_instance_type
     ebs_volume_size = var.broker_volume_size
     client_subnets  = var.subnet_ids
-    security_groups = concat(var.broker_node_security_groups, aws_security_group.default.*.id)
+    security_groups = concat(var.broker_node_security_groups, [module.broker_security_group.id])
   }
 
   configuration_info {
