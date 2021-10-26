@@ -64,15 +64,13 @@ module "broker_security_group" {
   source  = "cloudposse/security-group/aws"
   version = "0.4.2"
 
-  attributes = ["broker"]
-
   enabled                       = local.enabled && var.create_security_group
   security_group_name           = var.security_group_name
   create_before_destroy         = var.security_group_create_before_destroy
   security_group_create_timeout = var.security_group_create_timeout
   security_group_delete_timeout = var.security_group_delete_timeout
 
-  security_group_description = coalesce(var.security_group_description, "Allow inbound MSK-related traffic from Security Groups and CIDRs. Allow all outbound traffic")
+  security_group_description = coalesce(var.security_group_description, "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic")
   allow_all_egress           = true
   rules                      = var.additional_security_group_rules
   rule_matrix = [
