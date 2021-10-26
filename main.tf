@@ -143,15 +143,12 @@ resource "aws_msk_cluster" "default" {
         }
       }
       dynamic "sasl" {
-        for_each = var.client_sasl_scram_enabled ? [1] : []
+        #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true
+        #bridgecrew:skip=BC_AWS_GENERAL_32:Skipping `MSK cluster encryption at rest and in transit is not enabled` check since it can be enabled with encryption_in_cluster = true
+        for_each = var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
         content {
           scram = var.client_sasl_scram_enabled
-        }
-      }
-      dynamic "sasl" {
-        for_each = var.client_sasl_iam_enabled ? [1] : []
-        content {
-          iam = var.client_sasl_iam_enabled
+          iam   = var.client_sasl_iam_enabled
         }
       }
     }
