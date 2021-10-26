@@ -35,6 +35,9 @@ Terraform module to provision [Amazon Managed Streaming](https://aws.amazon.com/
 __Note:__ this module is intended for use with an existing VPC.
   To create a new VPC, use [terraform-aws-vpc](https://github.com/cloudposse/terraform-aws-vpc) module.
 
+**NOTE**: Release `0.8.0` contains breaking changes that will result in the destruction of your existing MSK cluster.
+To preserve the original cluster, follow the instructions in the [0.7.x to 0.8.x+ migration path](./docs/migration-0.7.x-0.8.x+.md).
+
 ---
 
 This project is part of our comprehensive ["SweetOps"](https://cpco.io/sweetops) approach towards DevOps.
