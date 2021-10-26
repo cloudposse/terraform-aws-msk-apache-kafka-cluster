@@ -35,18 +35,9 @@ variable "zone_id" {
   default     = null
 }
 
-variable "security_groups" {
-  type        = list(string)
-  default     = []
-  description = "List of security group IDs to be allowed to connect to the cluster"
-}
-
-variable "broker_node_security_groups" {
-  type        = list(string)
-  default     = []
-  description = "List of broker node security group IDs to be associated with the elastic network interfaces to control who can communicate with the cluster"
-}
-
+# Intentionally not deprecated via security_group_inputs.tf since it cannot effectively be replaced via var.additional_security_group_rules.
+# This is because the logic to create these rules exists within this module, and should not be passed in by the consumer
+# of this module.
 variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []

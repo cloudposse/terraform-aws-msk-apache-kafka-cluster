@@ -34,5 +34,5 @@ func TestExamplesComplete(t *testing.T) {
 	outputSecurityGroupName := terraform.Output(t, terraformOptions, "security_group_name")
 
 	// Verify we're getting back the outputs we expect
-	assert.Regexp(t, "^eg-ue2-test-msk-test-[0-9a-fA-F]+$", outputSecurityGroupName)
+	assert.Regexp(t, "^eg-ue2-test-msk-test-[0-9a-fA-F]+broker$", outputSecurityGroupName)
 }

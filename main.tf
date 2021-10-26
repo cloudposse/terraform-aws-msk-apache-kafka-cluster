@@ -66,11 +66,18 @@ module "broker_security_group" {
 
   attributes = ["broker"]
 
-  security_group_description = "Allow inbound MSK-related traffic from Security Groups and CIDRs. Allow all outbound traffic"
+  enabled                       = local.enabled && var.create_security_group
+  security_group_name           = var.security_group_name
+  create_before_destroy         = var.security_group_create_before_destroy
+  security_group_create_timeout = var.security_group_create_timeout
+  security_group_delete_timeout = var.security_group_delete_timeout
+
+  security_group_description = coalesce(var.security_group_description, "Allow inbound MSK-related traffic from Security Groups and CIDRs. Allow all outbound traffic")
   allow_all_egress           = true
+  rules                      = var.additional_security_group_rules
   rule_matrix = [
     {
-      source_security_group_ids = var.security_groups
+      source_security_group_ids = local.allowed_security_group_ids
       cidr_blocks               = var.allowed_cidr_blocks
       rules = [
         for protocol_key, protocol in local.protocols : {
@@ -110,7 +117,7 @@ resource "aws_msk_cluster" "default" {
     instance_type   = var.broker_instance_type
     ebs_volume_size = var.broker_volume_size
     client_subnets  = var.subnet_ids
-    security_groups = concat(var.broker_node_security_groups, [module.broker_security_group.id])
+    security_groups = concat(var.associated_security_group_ids, [module.broker_security_group.id])
   }
 
   configuration_info {
