@@ -7,8 +7,8 @@ This is because version `0.8.0` relies on the [terraform-aws-security-group](htt
 module for managing the broker security group. This changes the Terraform resource address for the Security Group, which will
 [cause Terraform to recreate the SG](https://github.com/hashicorp/terraform-provider-aws/blob/3988f0c55ad6eb33c2b4c660312df9a4be4586b9/internal/service/kafka/cluster.go#L90-L97). 
 
-To circumvent this, after bumping the module version to `0.8.0`, run a plan to retrieve the resource addresses of the SG that
-Terraform would like to destroy, and the resource address of the SG which Terraform would like to create.
+To circumvent this, after bumping the module version to `0.8.0` (or above), run a plan to retrieve the resource addresses of
+the SG that Terraform would like to destroy, and the resource address of the SG which Terraform would like to create.
 
 or above but before applying, remove the existing SG from the state:
 
