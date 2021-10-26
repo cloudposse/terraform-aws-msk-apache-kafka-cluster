@@ -101,15 +101,10 @@ resource "aws_msk_cluster" "default" {
         }
       }
       dynamic "sasl" {
-        for_each = var.client_sasl_scram_enabled ? [1] : []
+        for_each = var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
         content {
           scram = var.client_sasl_scram_enabled
-        }
-      }
-      dynamic "sasl" {
-        for_each = var.client_sasl_iam_enabled ? [1] : []
-        content {
-          iam = var.client_sasl_iam_enabled
+          iam   = var.client_sasl_iam_enabled
         }
       }
     }
