@@ -10,7 +10,18 @@ module for managing the broker security group. This changes the Terraform resour
 To circumvent this, after bumping the module version to `0.8.0` (or above), run a plan to retrieve the resource addresses of
 the SG that Terraform would like to destroy, and the resource address of the SG which Terraform would like to create.
 
+First, make sure that the following variable is set:
+
+```hcl
+security_group_description = "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic"
+```
+
+Setting `security_group_description` to its "legacy" value will keep the Security Group from being replaced, and hence the MSK cluster.
+
+Finally, change the resource address of the existing Security Group.
+
 ```bash
 $ terraform state mv  "...aws_security_group.default[0]" "...module.broker_security_group.aws_security_group.default[0]" 
+```
 
 This will result in an apply that will only destroy SG Rules, but not the itself or the MSK cluster.

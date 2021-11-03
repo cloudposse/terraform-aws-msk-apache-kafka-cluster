@@ -70,7 +70,7 @@ module "broker_security_group" {
   security_group_create_timeout = var.security_group_create_timeout
   security_group_delete_timeout = var.security_group_delete_timeout
 
-  security_group_description = coalesce(var.security_group_description, "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic")
+  security_group_description = var.security_group_description
   allow_all_egress           = true
   rules                      = var.additional_security_group_rules
   rule_matrix = [
