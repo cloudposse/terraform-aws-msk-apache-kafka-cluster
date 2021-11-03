@@ -1,22 +1,5 @@
 # security_group_inputs Version: 1
 #
-# Copy this file from https://github.com/cloudposse/terraform-aws-security-group/blob/master/exports/security_group_inputs.tf
-# and EDIT IT TO SUIT YOUR PROJECT. Update the version number above if you update this file from a later version.
-#
-# KEEP this top comment block, but REMOVE COMMENTS below that are intended
-# for the initial implementor and not maintainers or end users.
-#
-# This file provides the standard inputs that all Cloud Posse Open Source
-# Terraform module that create AWS Security Groups should implement.
-# This file does NOT provide implementation of the inputs, as that
-# of course varies with each module.
-#
-# This file documents, but does not declare, the standard outputs modules should create,
-# again because the implementation will vary with modules.
-#
-# Unlike null-label context.tf, this file cannot be automatically updated
-# because of the tight integration with the module using it.
-#
 
 
 variable "create_security_group" {
@@ -68,7 +51,7 @@ variable "security_group_description" {
 variable "security_group_create_before_destroy" {
   type = bool
 
-  default     = false
+  default     = true
   description = <<-EOT
     Set `true` to enable Terraform `create_before_destroy` behavior on the created security group.
     We recommend setting this `true` on new security groups, but default it to `false` because `true`
