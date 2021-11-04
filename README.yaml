@@ -67,6 +67,9 @@ description: |-
 
   __Note:__ this module is intended for use with an existing VPC.
     To create a new VPC, use [terraform-aws-vpc](https://github.com/cloudposse/terraform-aws-vpc) module.
+
+  **NOTE**: Release `0.8.0` contains breaking changes that will result in the destruction of your existing MSK cluster.
+  To preserve the original cluster, follow the instructions in the [0.7.x to 0.8.x+ migration path](./docs/migration-0.7.x-0.8.x+.md).
 # Introduction to the project
 #introduction: |-
 #  This is an introduction.
@@ -86,11 +89,15 @@ usage: |-
     name                   = "app"
     vpc_id                 = "vpc-XXXXXXXX"
     zone_id                = "Z14EN2YD427LRQ"
-    security_groups        = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
     subnet_ids             = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
     kafka_version          = "2.4.1"
     number_of_broker_nodes = 2 # this has to be a multiple of the # of subnet_ids
     broker_instance_type   = "kafka.m5.large"
+
+    # security groups to put on the cluster itself
+    associated_security_group_ids = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
+    # security groups to give access to the cluster
+    associated_security_group_ids = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
   }
   ```
 
