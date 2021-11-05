@@ -53,7 +53,9 @@ locals {
 }
 
 data "aws_msk_broker_nodes" "default" {
-  cluster_arn = aws_msk_cluster.default[0].arn
+  count = local.enabled ? 1 : 0
+
+  cluster_arn = join("", aws_msk_cluster.default.*.arn)
 }
 
 module "broker_security_group" {
