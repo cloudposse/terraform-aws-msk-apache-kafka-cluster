@@ -2,7 +2,7 @@ locals {
   enabled = module.this.enabled
 
   node_info_list = data.aws_msk_broker_nodes.default.*.node_info_list
-  brokers        = try(flatten(local.node_info_list.*.endpoints), [])
+  brokers        = local.enabled ? flatten(local.node_info_list.*.endpoints) : []
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 
