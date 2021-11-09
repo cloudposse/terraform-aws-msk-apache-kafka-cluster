@@ -1,15 +1,7 @@
 locals {
   enabled = module.this.enabled
 
-  bootstrap_brokers               = try(aws_msk_cluster.default[0].bootstrap_brokers, "")
-  bootstrap_brokers_list          = local.bootstrap_brokers != "" ? sort(split(",", local.bootstrap_brokers)) : []
-  bootstrap_brokers_tls           = try(aws_msk_cluster.default[0].bootstrap_brokers_tls, "")
-  bootstrap_brokers_tls_list      = local.bootstrap_brokers_tls != "" ? sort(split(",", local.bootstrap_brokers_tls)) : []
-  bootstrap_brokers_scram         = try(aws_msk_cluster.default[0].bootstrap_brokers_sasl_scram, "")
-  bootstrap_brokers_scram_list    = local.bootstrap_brokers_scram != "" ? sort(split(",", local.bootstrap_brokers_scram)) : []
-  bootstrap_brokers_iam           = try(aws_msk_cluster.default[0].bootstrap_brokers_sasl_iam, "")
-  bootstrap_brokers_iam_list      = local.bootstrap_brokers_iam != "" ? sort(split(",", local.bootstrap_brokers_iam)) : []
-  bootstrap_brokers_combined_list = concat(local.bootstrap_brokers_list, local.bootstrap_brokers_tls_list, local.bootstrap_brokers_scram_list, local.bootstrap_brokers_iam_list)
+  brokers = local.enabled ? flatten(data.aws_msk_broker_nodes.default[0].node_info_list.*.endpoints) : []
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 
@@ -58,6 +50,12 @@ locals {
       port    = 2182
     }
   }
+}
+
+data "aws_msk_broker_nodes" "default" {
+  count = local.enabled ? 1 : 0
+
+  cluster_arn = join("", aws_msk_cluster.default.*.arn)
 }
 
 module "broker_security_group" {
@@ -207,7 +205,7 @@ module "hostname" {
   enabled  = module.this.enabled && length(var.zone_id) > 0
   dns_name = "${module.this.name}-broker-${count.index + 1}"
   zone_id  = var.zone_id
-  records  = [split(":", element(local.bootstrap_brokers_combined_list, count.index))[0]]
+  records  = [local.brokers[count.index]]
 
   context = module.this.context
 }

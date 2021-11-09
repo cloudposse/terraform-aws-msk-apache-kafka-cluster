@@ -8,7 +8,7 @@ output "bootstrap_brokers" {
   value       = join(",", aws_msk_cluster.default.*.bootstrap_brokers)
 }
 
-output "bootstrap_broker_tls" {
+output "bootstrap_brokers_tls" {
   description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity to the kafka cluster"
   value       = join(",", aws_msk_cluster.default.*.bootstrap_brokers_tls)
 }
@@ -21,6 +21,11 @@ output "bootstrap_brokers_scram" {
 output "bootstrap_brokers_iam" {
   description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity using SASL/IAM to the kafka cluster."
   value       = join(",", aws_msk_cluster.default.*.bootstrap_brokers_sasl_iam)
+}
+
+output "all_brokers" {
+  description = "A list of all brokers"
+  value       = local.brokers
 }
 
 output "current_version" {
