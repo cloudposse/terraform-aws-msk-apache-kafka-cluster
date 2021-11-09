@@ -1,8 +1,7 @@
 locals {
   enabled = module.this.enabled
 
-  node_info_list = data.aws_msk_broker_nodes.default.*.node_info_list
-  brokers        = local.enabled ? flatten(local.node_info_list.*.endpoints) : []
+  brokers = local.enabled ? flatten(data.aws_msk_broker_nodes.default[0].node_info_list.*.endpoints) : []
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 
@@ -198,7 +197,7 @@ resource "aws_msk_scram_secret_association" "default" {
 }
 
 module "hostname" {
-  count = var.number_of_broker_nodes > 0 && var.zone_id != null ? var.number_of_broker_nodes : 0
+  count = var.zone_id != null ? length(local.brokers) : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
