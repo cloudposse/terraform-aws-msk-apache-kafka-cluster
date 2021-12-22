@@ -82,7 +82,7 @@ module "broker_security_group" {
           from_port   = protocol.port
           to_port     = protocol.port
           protocol    = "tcp"
-          description = "Allow inbound ${protocol.name} traffic"
+          description = format(var.security_group_rule_description, protocol.name)
         } if protocol.enabled
       ]
     }

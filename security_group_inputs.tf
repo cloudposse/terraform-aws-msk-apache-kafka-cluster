@@ -87,3 +87,9 @@ variable "additional_security_group_rules" {
     To get more info see https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule .
     EOT
 }
+
+variable "security_group_rule_description" {
+  type        = string
+  default     = "Allow inbound %s traffic"
+  description = "The description to place on each security group rule. The %s will be replaced with the protocol name."
+}
