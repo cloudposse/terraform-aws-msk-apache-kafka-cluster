@@ -103,6 +103,8 @@ resource "aws_msk_configuration" "config" {
 
 resource "aws_msk_cluster" "default" {
   #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true
+  #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true
+  #bridgecrew:skip=BC_AWS_GENERAL_32:Skipping `MSK cluster encryption at rest and in transit is not enabled` check since it can be enabled with encryption_in_cluster = true
   count                  = local.enabled ? 1 : 0
   cluster_name           = module.this.id
   kafka_version          = var.kafka_version
@@ -139,8 +141,6 @@ resource "aws_msk_cluster" "default" {
         }
       }
       dynamic "sasl" {
-        #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true
-        #bridgecrew:skip=BC_AWS_GENERAL_32:Skipping `MSK cluster encryption at rest and in transit is not enabled` check since it can be enabled with encryption_in_cluster = true
         for_each = var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
         content {
           scram = var.client_sasl_scram_enabled
@@ -205,7 +205,7 @@ module "hostname" {
   enabled  = module.this.enabled && length(var.zone_id) > 0
   dns_name = "${module.this.name}-broker-${count.index + 1}"
   zone_id  = var.zone_id
-  records  = [local.brokers[count.index]]
+  records  = local.enabled ? [local.brokers[count.index]] : []
 
   context = module.this.context
 }

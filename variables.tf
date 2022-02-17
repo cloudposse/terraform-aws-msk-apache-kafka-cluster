@@ -77,19 +77,19 @@ variable "certificate_authority_arns" {
 variable "client_sasl_scram_enabled" {
   type        = bool
   default     = false
-  description = "Enables SCRAM client authentication via AWS Secrets Manager."
+  description = "Enables SCRAM client authentication via AWS Secrets Manager (cannot be set to `true` at the same time as `client_tls_auth_enabled`)."
 }
 
 variable "client_sasl_scram_secret_association_arns" {
   type        = list(string)
   default     = []
-  description = "List of AWS Secrets Manager secret ARNs for scram authentication."
+  description = "List of AWS Secrets Manager secret ARNs for scram authentication (cannot be set to `true` at the same time as `client_tls_auth_enabled`)."
 }
 
 variable "client_sasl_iam_enabled" {
   type        = bool
   default     = false
-  description = "Enables client authentication via IAM policies"
+  description = "Enables client authentication via IAM policies (cannot be set to `true` at the same time as `client_sasl_*_enabled`)."
 }
 
 variable "client_tls_auth_enabled" {
