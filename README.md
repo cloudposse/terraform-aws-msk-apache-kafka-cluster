@@ -122,7 +122,7 @@ module "kafka" {
   # security groups to put on the cluster itself
   associated_security_group_ids = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
   # security groups to give access to the cluster
-  allowed_security_group_ids = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
+  associated_security_group_ids = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
 }
 ```
 
