@@ -166,7 +166,7 @@ Available targets:
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_broker_security_group"></a> [broker\_security\_group](#module\_broker\_security\_group) | cloudposse/security-group/aws | 0.4.3 |
+| <a name="module_broker_security_group"></a> [broker\_security\_group](#module\_broker\_security\_group) | cloudposse/security-group/aws | 1.0.0 |
 | <a name="module_hostname"></a> [hostname](#module\_hostname) | cloudposse/route53-cluster-hostname/aws | 0.12.2 |
 | <a name="module_this"></a> [this](#module\_this) | cloudposse/label/null | 0.25.0 |
 
