@@ -60,7 +60,7 @@ data "aws_msk_broker_nodes" "default" {
 
 module "broker_security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "1.0.0"
+  version = "1.0.1"
 
   enabled                       = local.enabled && var.create_security_group
   security_group_name           = var.security_group_name
