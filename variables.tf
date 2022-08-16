@@ -1,8 +1,3 @@
-variable "number_of_broker_nodes" {
-  type        = number
-  description = "The desired total number of broker nodes in the kafka cluster. It must be a multiple of the number of specified client subnets."
-}
-
 variable "kafka_version" {
   type        = string
   description = "The desired Kafka software version"
@@ -11,6 +6,16 @@ variable "kafka_version" {
 variable "broker_instance_type" {
   type        = string
   description = "The instance type to use for the Kafka brokers"
+}
+
+variable "broker_per_zone" {
+  type        = number
+  default     = 1
+  description = "Number of Kafka brokers per zone."
+  validation {
+    condition     = var.broker_per_zone > 0
+    error_message = "The broker_per_zone value must be at atleast 1."
+  }
 }
 
 variable "broker_volume_size" {
@@ -27,6 +32,10 @@ variable "vpc_id" {
 variable "subnet_ids" {
   type        = list(string)
   description = "Subnet IDs for Client Broker"
+  validation {
+    condition     = length(var.subnet_ids) > 0
+    error_message = "The subnet_ids list must have at atleast 1 value."
+  }
 }
 
 variable "zone_id" {
