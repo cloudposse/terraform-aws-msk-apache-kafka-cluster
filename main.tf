@@ -197,7 +197,7 @@ resource "aws_msk_scram_secret_association" "default" {
 }
 
 module "hostname" {
-  count = local.enabled && (var.brokers_per_zone * length(var.subnet_ids)) && var.zone_id != null ? (var.brokers_per_zone * length(var.subnet_ids)) : 0
+  count = local.enabled && var.zone_id != null ? (var.brokers_per_zone * length(var.subnet_ids)) : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
