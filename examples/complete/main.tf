@@ -33,13 +33,13 @@ resource "random_id" "config_id" {
 module "kafka" {
   source = "../../"
 
-  zone_id                = var.zone_id
-  security_groups        = [module.vpc.vpc_default_security_group_id]
-  vpc_id                 = module.vpc.vpc_id
-  subnet_ids             = module.subnets.private_subnet_ids
-  kafka_version          = var.kafka_version
-  number_of_broker_nodes = var.number_of_broker_nodes
-  broker_instance_type   = var.broker_instance_type
+  zone_id              = var.zone_id
+  security_groups      = [module.vpc.vpc_default_security_group_id]
+  vpc_id               = module.vpc.vpc_id
+  subnet_ids           = module.subnets.private_subnet_ids
+  kafka_version        = var.kafka_version
+  broker_per_zone      = var.broker_per_zone
+  broker_instance_type = var.broker_instance_type
 
   name = "${module.this.name}${module.this.delimiter}${try(random_id.config_id[0].hex, "")}"
 
