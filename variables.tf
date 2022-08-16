@@ -13,8 +13,8 @@ variable "broker_per_zone" {
   default     = 1
   description = "Number of Kafka brokers per zone."
   validation {
-    condition     = length(var.brokers_per_zone) > 0
-    error_message = "The broker_per_zone value must be at atleast 1"
+    condition     = length(var.broker_per_zone) > 0
+    error_message = "The broker_per_zone value must be at atleast 1."
   }
 }
 
