@@ -32,6 +32,10 @@ variable "vpc_id" {
 variable "subnet_ids" {
   type        = list(string)
   description = "Subnet IDs for Client Broker"
+  validation {
+    condition     = length(var.subnet_ids) > 0
+    error_message = "The subnet_ids list must have at atleast 1 value."
+  }
 }
 
 variable "zone_id" {
