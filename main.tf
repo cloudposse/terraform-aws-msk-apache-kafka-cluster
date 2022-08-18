@@ -49,6 +49,20 @@ locals {
       enabled = true
       port    = 2182
     }
+    # The following two protocols are enabled on demand of user
+    # See: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#jmx_exporter
+    # and https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#node_exporter
+    # and https://docs.aws.amazon.com/msk/latest/developerguide/open-monitoring.html#set-up-prometheus-host
+    jmx_exporter = {
+      name    = "JMX Exporter"
+      enabled = var.jmx_exporter_enabled
+      port    = 11001
+    }
+    node_exporter = {
+      name    = "Node Exporter"
+      enabled = var.node_exporter_enabled
+      port    = 11002
+    }
   }
 }
 
