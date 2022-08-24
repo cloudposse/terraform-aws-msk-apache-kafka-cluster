@@ -18,9 +18,9 @@ variable "broker_instance_type" {
   description = "Specify the instance type to use for the kafka brokers"
 }
 
-variable "number_of_broker_nodes" {
+variable "broker_per_zone" {
   type        = number
-  description = "The desired total number of broker nodes in the kafka cluster. It must be a multiple of the number of specified client subnets."
+  description = "Number of Kafka brokers per zone"
 }
 
 variable "region" {

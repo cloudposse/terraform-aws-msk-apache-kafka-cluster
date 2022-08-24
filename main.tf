@@ -108,7 +108,7 @@ resource "aws_msk_cluster" "default" {
   count                  = local.enabled ? 1 : 0
   cluster_name           = module.this.id
   kafka_version          = var.kafka_version
-  number_of_broker_nodes = var.number_of_broker_nodes
+  number_of_broker_nodes = var.broker_per_zone * length(var.subnet_ids)
   enhanced_monitoring    = var.enhanced_monitoring
 
   broker_node_group_info {
@@ -201,7 +201,7 @@ resource "aws_msk_scram_secret_association" "default" {
 }
 
 module "hostname" {
-  count = local.enabled && var.number_of_broker_nodes > 0 && var.zone_id != null ? var.number_of_broker_nodes : 0
+  count = local.enabled && var.zone_id != null ? (var.broker_per_zone * length(var.subnet_ids)) : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
