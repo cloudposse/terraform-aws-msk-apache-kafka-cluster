@@ -113,7 +113,11 @@ resource "aws_msk_cluster" "default" {
 
   broker_node_group_info {
     instance_type   = var.broker_instance_type
-    ebs_volume_size = var.broker_volume_size
+    storage_info {
+      ebs_storage_info {
+        volume_size = var.broker_volume_size
+      }
+    }
     client_subnets  = var.subnet_ids
     security_groups = var.create_security_group ? concat(var.associated_security_group_ids, [module.broker_security_group.id]) : var.associated_security_group_ids
   }
