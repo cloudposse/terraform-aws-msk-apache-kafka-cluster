@@ -83,6 +83,12 @@ variable "certificate_authority_arns" {
   description = "List of ACM Certificate Authority Amazon Resource Names (ARNs) to be used for TLS client authentication"
 }
 
+variable "client_allow_unauthenticated" {
+  type        = bool
+  default     = false
+  description = "Enables unauthenticated access."
+}
+
 variable "client_sasl_scram_enabled" {
   type        = bool
   default     = false
@@ -165,6 +171,12 @@ variable "properties" {
   type        = map(string)
   default     = {}
   description = "Contents of the server.properties file. Supported properties are documented in the [MSK Developer Guide](https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html)"
+}
+
+variable "autoscaling_enabled" {
+  type        = bool
+  default     = true
+  description = "To automatically expand your cluster's storage in response to increased usage, you can enable this. [More info](https://docs.aws.amazon.com/msk/latest/developerguide/msk-autoexpand.html)"
 }
 
 variable "storage_autoscaling_target_value" {
