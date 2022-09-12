@@ -161,6 +161,7 @@ resource "aws_msk_cluster" "default" {
           iam   = var.client_sasl_iam_enabled
         }
       }
+      unauthenticated = var.client_allow_unauthenticated
     }
   }
 
@@ -225,7 +226,7 @@ module "hostname" {
 }
 
 resource "aws_appautoscaling_target" "default" {
-  count = local.enabled ? 1 : 0
+  count = local.enabled && var.autoscaling_enabled ? 1 : 0
 
   max_capacity       = local.broker_volume_size_max
   min_capacity       = 1
@@ -235,7 +236,7 @@ resource "aws_appautoscaling_target" "default" {
 }
 
 resource "aws_appautoscaling_policy" "default" {
-  count = local.enabled ? 1 : 0
+  count = local.enabled && var.autoscaling_enabled ? 1 : 0
 
   name               = "${aws_msk_cluster.default[0].cluster_name}-broker-scaling"
   policy_type        = "TargetTrackingScaling"
