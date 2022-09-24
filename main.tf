@@ -126,7 +126,7 @@ resource "aws_msk_cluster" "default" {
   enhanced_monitoring    = var.enhanced_monitoring
 
   broker_node_group_info {
-    instance_type   = var.broker_instance_type
+    instance_type = var.broker_instance_type
     storage_info {
       ebs_storage_info {
         volume_size = var.broker_volume_size
