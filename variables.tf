@@ -83,6 +83,12 @@ variable "certificate_authority_arns" {
   description = "List of ACM Certificate Authority Amazon Resource Names (ARNs) to be used for TLS client authentication"
 }
 
+variable "client_allow_unauthenticated" {
+  type        = bool
+  default     = false
+  description = "Enables unauthenticated access."
+}
+
 variable "client_sasl_scram_enabled" {
   type        = bool
   default     = false
