@@ -151,6 +151,7 @@ resource "aws_msk_cluster" "default" {
           iam   = var.client_sasl_iam_enabled
         }
       }
+      unauthenticated = var.client_allow_unauthenticated
     }
   }
 
