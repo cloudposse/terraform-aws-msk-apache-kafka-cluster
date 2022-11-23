@@ -215,7 +215,7 @@ module "hostname" {
   count = local.enabled && var.zone_id != null ? (var.broker_per_zone * length(var.subnet_ids)) : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.2"
+  version = "0.12.3"
 
   enabled  = local.enabled && length(var.zone_id) > 0
   dns_name = "${module.this.name}-broker-${count.index + 1}"
