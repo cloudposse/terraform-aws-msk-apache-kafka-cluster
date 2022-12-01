@@ -134,7 +134,7 @@ resource "aws_msk_cluster" "default" {
       public_access {
         type = var.public_access ? "SERVICE_PROVIDED_EIPS" : "DISABLED"
       }
-    }  
+    }
   }
 
   configuration_info {
