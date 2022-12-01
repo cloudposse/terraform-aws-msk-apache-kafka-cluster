@@ -196,3 +196,9 @@ variable "storage_autoscaling_disable_scale_in" {
   default     = false
   description = "If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource."
 }
+
+variable "public_access" {
+  type        = bool
+  default     = false
+  description = "Enable public access to MSK cluster (given that all of the requirements are met)"
+}
