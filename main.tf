@@ -136,7 +136,7 @@ resource "aws_msk_cluster" "default" {
   }
 
   dynamic "client_authentication" {
-    for_each = var.client_tls_auth_enabled || var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
+    for_each = [1]
     content {
       dynamic "tls" {
         for_each = var.client_tls_auth_enabled ? [1] : []
