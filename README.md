@@ -116,7 +116,7 @@ module "kafka" {
   zone_id                = "Z14EN2YD427LRQ"
   subnet_ids             = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
   kafka_version          = "2.4.1"
-  broker_per_zone        = 2 # this has to be a multiple of the # of subnet_ids
+  number_of_broker_nodes = 2 # this has to be a multiple of the # of subnet_ids
   broker_instance_type   = "kafka.m5.large"
 
   # security groups to put on the cluster itself
