@@ -190,3 +190,15 @@ variable "storage_autoscaling_disable_scale_in" {
   default     = false
   description = "If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource."
 }
+
+variable "enable_provisioned_throughput" {
+  type        = bool
+  default     = false
+  description = "Controls whether provisioned throughput is enabled or not. Default value: false."
+}
+
+variable "provisioned_volume_throughput" {
+  type        = number
+  default     = 250
+  description = "Throughput value of the EBS volumes for the data drive on each kafka broker node in MiB per second. The minimum value is 250. The maximum value varies between broker type. You can refer to the valid values for the maximum volume throughput at the following https://docs.aws.amazon.com/msk/latest/developerguide/msk-provision-throughput.html#throughput-bottlenecks"
+}

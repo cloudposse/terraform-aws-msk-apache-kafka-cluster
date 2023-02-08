@@ -115,6 +115,10 @@ resource "aws_msk_cluster" "default" {
     instance_type   = var.broker_instance_type
     storage_info {
       ebs_storage_info {
+        provisioned_throughput {
+          enabled           = var.enable_provisioned_throughput
+          volume_throughput = var.provisioned_volume_throughput
+        }
         volume_size = var.broker_volume_size
       }
     }
