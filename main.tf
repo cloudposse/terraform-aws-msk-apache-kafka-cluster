@@ -201,7 +201,7 @@ resource "aws_msk_cluster" "default" {
   lifecycle {
     ignore_changes = [
       # Ignore changes to broker_volume_size in favor of autoscaling policy
-      var.broker_volume_size,
+      broker_node_group_info[0].storage_info.ebs_storage_info.volume_size,
     ]
   }
 
