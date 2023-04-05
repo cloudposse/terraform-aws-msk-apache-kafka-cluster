@@ -44,6 +44,12 @@ variable "zone_id" {
   default     = null
 }
 
+variable "custom_broker_dns_name" {
+  type = string
+  description = "Custom Route53 DNS hostnames for MSK brokers"
+  default = null
+}
+
 # Intentionally not deprecated via security_group_inputs.tf since it cannot effectively be replaced via var.additional_security_group_rules.
 # This is because the logic to create these rules exists within this module, and should not be passed in by the consumer
 # of this module.
