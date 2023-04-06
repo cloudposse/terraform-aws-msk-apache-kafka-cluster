@@ -46,7 +46,7 @@ variable "zone_id" {
 
 variable "custom_broker_dns_name" {
   type = string
-  description = "Custom Route53 DNS hostnames for MSK brokers"
+  description = "Custom Route53 DNS hostname for MSK brokers. Use `%%ID%%` key to specify brokers index in the hostname. Example: `kafka-broker%%ID%%.example.com`"
   default = null
 }
 
