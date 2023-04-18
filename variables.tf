@@ -96,8 +96,8 @@ variable "client_sasl_scram_enabled" {
 }
 
 variable "client_sasl_scram_secret_association_enabled" {
-  type = bool
-  default = true
+  type        = bool
+  default     = true
   description = "Enables the list of AWS Secrets Manager secret ARNs for scram authentication"
 }
 
