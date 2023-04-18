@@ -209,7 +209,7 @@ resource "aws_msk_cluster" "default" {
 }
 
 resource "aws_msk_scram_secret_association" "default" {
-  count = local.enabled && var.client_sasl_scram_enabled ? 1 : 0
+  count = local.enabled && var.client_sasl_scram_enabled && var.client_sasl_scram_secret_association_enabled ? 1 : 0
 
   cluster_arn     = aws_msk_cluster.default[0].arn
   secret_arn_list = var.client_sasl_scram_secret_association_arns
