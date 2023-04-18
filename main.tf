@@ -1,7 +1,7 @@
 locals {
   enabled = module.this.enabled
 
-  brokers = local.enabled ? flatten(data.aws_msk_broker_nodes.default[0].node_info_list.*.endpoints) : []
+  brokers = local.enabled ? flatten(data.aws_msk_broker_nodes.default[0].node_info_list[*].endpoints) : []
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 
@@ -49,18 +49,32 @@ locals {
       enabled = true
       port    = 2182
     }
+    # The following two protocols are enabled on demand of user
+    # See: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#jmx_exporter
+    # and https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster#node_exporter
+    # and https://docs.aws.amazon.com/msk/latest/developerguide/open-monitoring.html#set-up-prometheus-host
+    jmx_exporter = {
+      name    = "JMX Exporter"
+      enabled = var.jmx_exporter_enabled
+      port    = 11001
+    }
+    node_exporter = {
+      name    = "Node Exporter"
+      enabled = var.node_exporter_enabled
+      port    = 11002
+    }
   }
 }
 
 data "aws_msk_broker_nodes" "default" {
   count = local.enabled ? 1 : 0
 
-  cluster_arn = join("", aws_msk_cluster.default.*.arn)
+  cluster_arn = join("", aws_msk_cluster.default[*].arn)
 }
 
 module "broker_security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "1.0.0"
+  version = "1.0.1"
 
   enabled                       = local.enabled && var.create_security_group
   security_group_name           = var.security_group_name
@@ -108,12 +122,16 @@ resource "aws_msk_cluster" "default" {
   count                  = local.enabled ? 1 : 0
   cluster_name           = module.this.id
   kafka_version          = var.kafka_version
-  number_of_broker_nodes = var.number_of_broker_nodes
+  number_of_broker_nodes = var.broker_per_zone * length(var.subnet_ids)
   enhanced_monitoring    = var.enhanced_monitoring
 
   broker_node_group_info {
-    instance_type   = var.broker_instance_type
-    ebs_volume_size = var.broker_volume_size
+    instance_type = var.broker_instance_type
+    storage_info {
+      ebs_storage_info {
+        volume_size = var.broker_volume_size
+      }
+    }
     client_subnets  = var.subnet_ids
     security_groups = var.create_security_group ? concat(var.associated_security_group_ids, [module.broker_security_group.id]) : var.associated_security_group_ids
   }
@@ -147,6 +165,7 @@ resource "aws_msk_cluster" "default" {
           iam   = var.client_sasl_iam_enabled
         }
       }
+      unauthenticated = var.client_allow_unauthenticated
     }
   }
 
@@ -182,7 +201,7 @@ resource "aws_msk_cluster" "default" {
   lifecycle {
     ignore_changes = [
       # Ignore changes to ebs_volume_size in favor of autoscaling policy
-      broker_node_group_info[0].ebs_volume_size,
+      broker_node_group_info[0].storage_info[0].ebs_storage_info[0].volume_size,
     ]
   }
 
@@ -197,7 +216,7 @@ resource "aws_msk_scram_secret_association" "default" {
 }
 
 module "hostname" {
-  count = local.enabled && var.number_of_broker_nodes > 0 && var.zone_id != null ? var.number_of_broker_nodes : 0
+  count = local.enabled && var.zone_id != null ? (var.broker_per_zone * length(var.subnet_ids)) : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.2"
@@ -211,7 +230,7 @@ module "hostname" {
 }
 
 resource "aws_appautoscaling_target" "default" {
-  count = local.enabled ? 1 : 0
+  count = local.enabled && var.autoscaling_enabled ? 1 : 0
 
   max_capacity       = local.broker_volume_size_max
   min_capacity       = 1
@@ -221,13 +240,13 @@ resource "aws_appautoscaling_target" "default" {
 }
 
 resource "aws_appautoscaling_policy" "default" {
-  count = local.enabled ? 1 : 0
+  count = local.enabled && var.autoscaling_enabled ? 1 : 0
 
   name               = "${aws_msk_cluster.default[0].cluster_name}-broker-scaling"
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_msk_cluster.default[0].arn
-  scalable_dimension = join("", aws_appautoscaling_target.default.*.scalable_dimension)
-  service_namespace  = join("", aws_appautoscaling_target.default.*.service_namespace)
+  scalable_dimension = join("", aws_appautoscaling_target.default[*].scalable_dimension)
+  service_namespace  = join("", aws_appautoscaling_target.default[*].service_namespace)
 
   target_tracking_scaling_policy_configuration {
     disable_scale_in = var.storage_autoscaling_disable_scale_in

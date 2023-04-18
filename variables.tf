@@ -1,8 +1,3 @@
-variable "number_of_broker_nodes" {
-  type        = number
-  description = "The desired total number of broker nodes in the kafka cluster. It must be a multiple of the number of specified client subnets."
-}
-
 variable "kafka_version" {
   type        = string
   description = "The desired Kafka software version"
@@ -11,6 +6,16 @@ variable "kafka_version" {
 variable "broker_instance_type" {
   type        = string
   description = "The instance type to use for the Kafka brokers"
+}
+
+variable "broker_per_zone" {
+  type        = number
+  default     = 1
+  description = "Number of Kafka brokers per zone."
+  validation {
+    condition     = var.broker_per_zone > 0
+    error_message = "The broker_per_zone value must be at atleast 1."
+  }
 }
 
 variable "broker_volume_size" {
@@ -27,6 +32,10 @@ variable "vpc_id" {
 variable "subnet_ids" {
   type        = list(string)
   description = "Subnet IDs for Client Broker"
+  validation {
+    condition     = length(var.subnet_ids) > 0
+    error_message = "The subnet_ids list must have at atleast 1 value."
+  }
 }
 
 variable "zone_id" {
@@ -72,6 +81,12 @@ variable "certificate_authority_arns" {
   type        = list(string)
   default     = []
   description = "List of ACM Certificate Authority Amazon Resource Names (ARNs) to be used for TLS client authentication"
+}
+
+variable "client_allow_unauthenticated" {
+  type        = bool
+  default     = false
+  description = "Enables unauthenticated access."
 }
 
 variable "client_sasl_scram_enabled" {
@@ -156,6 +171,12 @@ variable "properties" {
   type        = map(string)
   default     = {}
   description = "Contents of the server.properties file. Supported properties are documented in the [MSK Developer Guide](https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html)"
+}
+
+variable "autoscaling_enabled" {
+  type        = bool
+  default     = true
+  description = "To automatically expand your cluster's storage in response to increased usage, you can enable this. [More info](https://docs.aws.amazon.com/msk/latest/developerguide/msk-autoexpand.html)"
 }
 
 variable "storage_autoscaling_target_value" {
