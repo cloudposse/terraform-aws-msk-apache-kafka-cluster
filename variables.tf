@@ -45,9 +45,9 @@ variable "zone_id" {
 }
 
 variable "custom_broker_dns_name" {
-  type = string
+  type        = string
   description = "Custom Route53 DNS hostname for MSK brokers. Use `%%ID%%` key to specify brokers index in the hostname. Example: `kafka-broker%%ID%%.example.com`"
-  default = null
+  default     = null
 }
 
 # Intentionally not deprecated via security_group_inputs.tf since it cannot effectively be replaced via var.additional_security_group_rules.
