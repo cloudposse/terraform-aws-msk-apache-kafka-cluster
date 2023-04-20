@@ -222,7 +222,7 @@ module "hostname" {
   version = "0.12.3"
 
   enabled  = local.enabled && length(var.zone_id) > 0
-  dns_name = "${module.this.name}-broker-${count.index + 1}"
+  dns_name = var.custom_broker_dns_name == null ? "${module.this.name}-broker-${count.index + 1}" : replace(var.custom_broker_dns_name, "%%ID%%", count.index + 1)
   zone_id  = var.zone_id
   records  = local.enabled ? [local.brokers[count.index]] : []
 
