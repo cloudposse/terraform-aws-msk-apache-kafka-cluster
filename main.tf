@@ -134,9 +134,10 @@ resource "aws_msk_cluster" "default" {
     }
     client_subnets  = var.subnet_ids
     security_groups = var.create_security_group ? concat(var.associated_security_group_ids, [module.broker_security_group.id]) : var.associated_security_group_ids
+
     connectivity_info {
-      public_access {
-        type = var.public_access ? "SERVICE_PROVIDED_EIPS" : "DISABLED"
+      public_access_enabled {
+        type = var.public_access_enabled ? "SERVICE_PROVIDED_EIPS" : "DISABLED"
       }
     }
   }
