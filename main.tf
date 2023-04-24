@@ -20,6 +20,10 @@ resource "aws_security_group" "default" {
   name        = module.this.id
   description = "Allow inbound traffic from Security Groups and CIDRs. Allow all outbound traffic"
   tags        = module.this.tags
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_security_group_rule" "ingress_security_groups" {
@@ -31,6 +35,10 @@ resource "aws_security_group_rule" "ingress_security_groups" {
   protocol                 = "tcp"
   source_security_group_id = var.security_groups[count.index]
   security_group_id        = join("", aws_security_group.default.*.id)
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_security_group_rule" "ingress_cidr_blocks" {
@@ -42,6 +50,10 @@ resource "aws_security_group_rule" "ingress_cidr_blocks" {
   protocol          = "tcp"
   cidr_blocks       = var.allowed_cidr_blocks
   security_group_id = join("", aws_security_group.default.*.id)
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_security_group_rule" "egress" {
@@ -53,6 +65,10 @@ resource "aws_security_group_rule" "egress" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = join("", aws_security_group.default.*.id)
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_msk_configuration" "config" {
@@ -62,6 +78,10 @@ resource "aws_msk_configuration" "config" {
   description    = "Manages an Amazon Managed Streaming for Kafka configuration"
 
   server_properties = join("\n", [for k in keys(var.properties) : format("%s = %s", k, var.properties[k])])
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_msk_cluster" "default" {
@@ -145,6 +165,7 @@ resource "aws_msk_cluster" "default" {
   }
 
   lifecycle {
+    prevent_destroy = true
     ignore_changes = [
       # Ignore changes to ebs_volume_size in favor of autoscaling policy
       broker_node_group_info[0].ebs_volume_size,
@@ -159,6 +180,10 @@ resource "aws_msk_scram_secret_association" "default" {
 
   cluster_arn     = aws_msk_cluster.default[0].arn
   secret_arn_list = var.client_sasl_scram_secret_association_arns
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 module "hostname" {
