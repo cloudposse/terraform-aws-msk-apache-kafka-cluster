@@ -1,6 +1,6 @@
 output "cluster_arn" {
   description = "Amazon Resource Name (ARN) of the MSK cluster"
-  value       = join("", aws_msk_cluster.default[*].arn)
+  value       = one(aws_msk_cluster.default[*].arn)
 }
 
 output "bootstrap_brokers" {
@@ -30,7 +30,7 @@ output "all_brokers" {
 
 output "current_version" {
   description = "Current version of the MSK Cluster used for updates"
-  value       = join("", aws_msk_cluster.default[*].current_version)
+  value       = one(aws_msk_cluster.default[*].current_version)
 }
 
 output "zookeeper_connect_string" {
@@ -40,12 +40,12 @@ output "zookeeper_connect_string" {
 
 output "config_arn" {
   description = "Amazon Resource Name (ARN) of the configuration"
-  value       = join("", aws_msk_configuration.config[*].arn)
+  value       = one(aws_msk_configuration.config[*].arn)
 }
 
 output "latest_revision" {
   description = "Latest revision of the configuration"
-  value       = join("", aws_msk_configuration.config[*].latest_revision)
+  value       = one(aws_msk_configuration.config[*].latest_revision)
 }
 
 output "hostname" {
@@ -55,7 +55,7 @@ output "hostname" {
 
 output "cluster_name" {
   description = "MSK Cluster name"
-  value       = join("", aws_msk_cluster.default[*].cluster_name)
+  value       = one(aws_msk_cluster.default[*].cluster_name)
 }
 
 output "security_group_id" {
