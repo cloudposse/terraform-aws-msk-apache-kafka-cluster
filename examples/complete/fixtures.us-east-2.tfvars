@@ -8,8 +8,6 @@ stage = "test"
 
 name = "msk-test"
 
-delimiter = "-"
-
 zone_id = "Z3SO0TKDDQ0RGG"
 
 availability_zones = ["us-east-2a", "us-east-2b"]

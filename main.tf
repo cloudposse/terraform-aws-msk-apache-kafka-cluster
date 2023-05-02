@@ -261,6 +261,7 @@ resource "aws_appautoscaling_policy" "default" {
 
   target_tracking_scaling_policy_configuration {
     disable_scale_in = var.storage_autoscaling_disable_scale_in
+
     predefined_metric_specification {
       predefined_metric_type = "KafkaBrokerStorageUtilization"
     }
