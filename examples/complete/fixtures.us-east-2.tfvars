@@ -20,5 +20,3 @@ broker_per_zone = 2
 broker_instance_type = "kafka.t3.small"
 
 create_security_group = true
-
-security_group_create_before_destroy = false
