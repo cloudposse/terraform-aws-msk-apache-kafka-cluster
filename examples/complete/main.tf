@@ -26,20 +26,22 @@ module "subnets" {
 }
 
 resource "random_id" "config_id" {
-  count       = module.this.enabled ? 1 : 0
+  count = module.this.enabled ? 1 : 0
+
   byte_length = 2
 }
 
 module "kafka" {
   source = "../../"
 
-  zone_id              = var.zone_id
-  security_groups      = [module.vpc.vpc_default_security_group_id]
-  vpc_id               = module.vpc.vpc_id
-  subnet_ids           = module.this.enabled ? module.subnets.private_subnet_ids : [""]
-  kafka_version        = var.kafka_version
-  broker_per_zone      = var.broker_per_zone
-  broker_instance_type = var.broker_instance_type
+  zone_id               = var.zone_id
+  security_groups       = [module.vpc.vpc_default_security_group_id]
+  vpc_id                = module.vpc.vpc_id
+  subnet_ids            = module.this.enabled ? module.subnets.private_subnet_ids : [""]
+  kafka_version         = var.kafka_version
+  broker_per_zone       = var.broker_per_zone
+  broker_instance_type  = var.broker_instance_type
+  public_access_enabled = var.public_access_enabled
 
   name = "${module.this.name}${module.this.delimiter}${try(random_id.config_id[0].hex, "")}"
 

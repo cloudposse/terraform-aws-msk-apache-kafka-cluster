@@ -1,3 +1,8 @@
+variable "region" {
+  type        = string
+  description = "AWS region"
+}
+
 variable "availability_zones" {
   type        = list(string)
   description = "List of availability zones for VPC creation"
@@ -23,7 +28,8 @@ variable "broker_per_zone" {
   description = "Number of Kafka brokers per zone"
 }
 
-variable "region" {
-  type        = string
-  description = "AWS region"
+variable "public_access_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable public access to MSK cluster (given that all of the requirements are met)"
 }

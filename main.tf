@@ -2,6 +2,7 @@ locals {
   enabled = module.this.enabled
 
   brokers = local.enabled ? flatten(data.aws_msk_broker_nodes.default[0].node_info_list[*].endpoints) : []
+
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 
@@ -107,7 +108,8 @@ module "broker_security_group" {
 }
 
 resource "aws_msk_configuration" "config" {
-  count          = local.enabled ? 1 : 0
+  count = local.enabled ? 1 : 0
+
   kafka_versions = [var.kafka_version]
   name           = module.this.id
   description    = "Manages an Amazon Managed Streaming for Kafka configuration"
@@ -119,7 +121,8 @@ resource "aws_msk_cluster" "default" {
   #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true
   #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true
   #bridgecrew:skip=BC_AWS_GENERAL_32:Skipping `MSK cluster encryption at rest and in transit is not enabled` check since it can be enabled with encryption_in_cluster = true
-  count                  = local.enabled ? 1 : 0
+  count = local.enabled ? 1 : 0
+
   cluster_name           = module.this.id
   kafka_version          = var.kafka_version
   number_of_broker_nodes = var.broker_per_zone * length(var.subnet_ids)
@@ -127,13 +130,21 @@ resource "aws_msk_cluster" "default" {
 
   broker_node_group_info {
     instance_type = var.broker_instance_type
+
     storage_info {
       ebs_storage_info {
         volume_size = var.broker_volume_size
       }
     }
+
     client_subnets  = var.subnet_ids
     security_groups = var.create_security_group ? concat(var.associated_security_group_ids, [module.broker_security_group.id]) : var.associated_security_group_ids
+
+    connectivity_info {
+      public_access {
+        type = var.public_access_enabled ? "SERVICE_PROVIDED_EIPS" : "DISABLED"
+      }
+    }
   }
 
   configuration_info {
