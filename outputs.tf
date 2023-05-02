@@ -57,13 +57,3 @@ output "cluster_name" {
   description = "MSK Cluster name"
   value       = one(aws_msk_cluster.default[*].cluster_name)
 }
-
-output "security_group_id" {
-  description = "The ID of the security group rule"
-  value       = module.broker_security_group.id
-}
-
-output "security_group_name" {
-  description = "The name of the security group rule"
-  value       = module.broker_security_group.name
-}

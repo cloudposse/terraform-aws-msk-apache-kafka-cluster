@@ -30,13 +30,29 @@ module "kafka" {
 
   name                  = module.this.id
   zone_id               = var.zone_id
-  security_groups       = [module.vpc.vpc_default_security_group_id]
   vpc_id                = module.vpc.vpc_id
   subnet_ids            = module.this.enabled ? module.subnets.private_subnet_ids : [""]
   kafka_version         = var.kafka_version
   broker_per_zone       = var.broker_per_zone
   broker_instance_type  = var.broker_instance_type
   public_access_enabled = var.public_access_enabled
+
+  allowed_security_group_ids            = concat(var.allowed_security_group_ids, [module.vpc.vpc_default_security_group_id])
+  allowed_cidr_blocks                   = var.allowed_cidr_blocks
+  allowed_ipv6_cidr_blocks              = var.allowed_ipv6_cidr_blocks
+  allowed_ipv6_prefix_list_ids          = var.allowed_ipv6_prefix_list_ids
+  associated_security_group_ids         = var.associated_security_group_ids
+  create_security_group                 = var.create_security_group
+  security_group_name                   = var.security_group_name
+  security_group_description            = var.security_group_description
+  security_group_create_before_destroy  = var.security_group_create_before_destroy
+  preserve_security_group_id            = var.preserve_security_group_id
+  security_group_create_timeout         = var.security_group_create_timeout
+  security_group_delete_timeout         = var.security_group_delete_timeout
+  allow_all_egress                      = var.allow_all_egress
+  additional_security_group_rules       = var.additional_security_group_rules
+  inline_rules_enabled                  = var.inline_rules_enabled
+  revoke_security_group_rules_on_delete = var.revoke_security_group_rules_on_delete
 
   context = module.this.context
 }

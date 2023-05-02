@@ -73,15 +73,16 @@ data "aws_msk_broker_nodes" "default" {
   cluster_arn = one(aws_msk_cluster.default[*].arn)
 }
 
-module "broker_security_group" {
+module "security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "1.0.1"
+  version = "2.0.1"
 
   enabled = local.enabled && var.create_security_group
 
   vpc_id                        = var.vpc_id
-  security_group_name           = var.security_group_name
+  security_group_name           = [var.security_group_name]
   create_before_destroy         = var.security_group_create_before_destroy
+  preserve_security_group_id    = var.preserve_security_group_id
   security_group_create_timeout = var.security_group_create_timeout
   security_group_delete_timeout = var.security_group_delete_timeout
 
@@ -91,7 +92,7 @@ module "broker_security_group" {
 
   rule_matrix = [
     {
-      source_security_group_ids = local.allowed_security_group_ids
+      source_security_group_ids = var.allowed_security_group_ids
       cidr_blocks               = var.allowed_cidr_blocks
       rules = [
         for protocol_key, protocol in local.protocols : {
@@ -133,7 +134,7 @@ resource "aws_msk_cluster" "default" {
   broker_node_group_info {
     instance_type   = var.broker_instance_type
     client_subnets  = var.subnet_ids
-    security_groups = var.create_security_group ? concat(var.associated_security_group_ids, [module.broker_security_group.id]) : var.associated_security_group_ids
+    security_groups = var.create_security_group ? concat(var.associated_security_group_ids, [module.security_group.id]) : var.associated_security_group_ids
 
     storage_info {
       ebs_storage_info {

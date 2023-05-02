@@ -27,11 +27,6 @@ variable "broker_volume_size" {
   description = "The size in GiB of the EBS volume for the data drive on each broker node"
 }
 
-variable "vpc_id" {
-  type        = string
-  description = "VPC ID where subnets will be created (e.g. `vpc-aceb2723`)"
-}
-
 variable "subnet_ids" {
   type        = list(string)
   description = "Subnet IDs for Client Broker"
@@ -51,15 +46,6 @@ variable "custom_broker_dns_name" {
   type        = string
   description = "Custom Route53 DNS hostname for MSK brokers. Use `%%ID%%` key to specify brokers index in the hostname. Example: `kafka-broker%%ID%%.example.com`"
   default     = null
-}
-
-# Intentionally not deprecated via security_group_inputs.tf since it cannot effectively be replaced via var.additional_security_group_rules.
-# This is because the logic to create these rules exists within this module, and should not be passed in by the consumer
-# of this module.
-variable "allowed_cidr_blocks" {
-  type        = list(string)
-  default     = []
-  description = "List of CIDR blocks to be allowed to connect to the cluster"
 }
 
 variable "client_broker" {
@@ -209,7 +195,13 @@ variable "storage_autoscaling_max_capacity" {
 variable "storage_autoscaling_disable_scale_in" {
   type        = bool
   default     = false
-  description = "If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource."
+  description = "If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource"
+}
+
+variable "security_group_rule_description" {
+  type        = string
+  default     = "Allow inbound %s traffic"
+  description = "The description to place on each security group rule. The %s will be replaced with the protocol name"
 }
 
 variable "public_access_enabled" {
