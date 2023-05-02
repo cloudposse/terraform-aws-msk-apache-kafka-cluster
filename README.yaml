@@ -70,6 +70,7 @@ description: |-
 
   **NOTE**: Release `0.8.0` contains breaking changes that will result in the destruction of your existing MSK cluster.
   To preserve the original cluster, follow the instructions in the [0.7.x to 0.8.x+ migration path](./docs/migration-0.7.x-0.8.x+.md).
+
 # Introduction to the project
 #introduction: |-
 #  This is an introduction.
@@ -84,19 +85,20 @@ usage: |-
     # Cloud Posse recommends pinning every module to a specific version
     # version = "x.x.x"
 
-    namespace              = "eg"
-    stage                  = "prod"
-    name                   = "app"
-    vpc_id                 = "vpc-XXXXXXXX"
-    zone_id                = "Z14EN2YD427LRQ"
-    subnet_ids             = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
-    kafka_version          = "2.4.1"
-    number_of_broker_nodes = 2 # this has to be a multiple of the # of subnet_ids
-    broker_instance_type   = "kafka.m5.large"
+    namespace            = "eg"
+    stage                = "prod"
+    name                 = "app"
+    vpc_id               = "vpc-XXXXXXXX"
+    zone_id              = "Z14EN2YD427LRQ"
+    subnet_ids           = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
+    kafka_version        = "3.3.2"
+    broker_per_zone      = 2
+    broker_instance_type = "kafka.m5.large"
 
-    # security groups to put on the cluster itself
+    # A list of IDs of Security Groups to associate the created resource with, in addition to the created security group
     associated_security_group_ids = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
-    # security groups to give access to the cluster
+    
+    # A list of IDs of Security Groups to allow access to the cluster
     allowed_security_group_ids = ["sg-XXXXXXXXX", "sg-YYYYYYYY"]
   }
   ```
@@ -105,9 +107,11 @@ usage: |-
 examples: |-
   Here is an example of using this module:
   - [`examples/complete`](https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster/) - complete example of using this module
+
 include:
   - "docs/targets.md"
   - "docs/terraform.md"
+
 # Contributors to this project
 contributors:
   - name: "Erik Osterman"
@@ -118,3 +122,5 @@ contributors:
     github: "nitrocode"
   - name: "Yonatan Koren"
     github: "korenyoni"
+  - name: "Andriy Knysh"
+    github: "aknysh"

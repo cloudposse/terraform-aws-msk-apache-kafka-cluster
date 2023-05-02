@@ -27,4 +27,3 @@ output "cluster_name" {
   description = "The cluster name of the MSK cluster"
   value       = module.kafka.cluster_name
 }
-

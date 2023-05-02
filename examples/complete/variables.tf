@@ -15,7 +15,10 @@ variable "zone_id" {
 
 variable "kafka_version" {
   type        = string
-  description = "Specify the desired Kafka software version"
+  description = <<-EOT
+  The desired Kafka software version.
+  Refer to https://docs.aws.amazon.com/msk/latest/developerguide/supported-kafka-versions.html for more details
+  EOT
 }
 
 variable "broker_instance_type" {

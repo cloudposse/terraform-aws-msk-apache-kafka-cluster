@@ -12,7 +12,8 @@ zone_id = "Z3SO0TKDDQ0RGG"
 
 availability_zones = ["us-east-2a", "us-east-2b"]
 
-kafka_version = "2.4.1.1"
+# https://docs.aws.amazon.com/msk/latest/developerguide/supported-kafka-versions.html
+kafka_version = "3.3.2"
 
 broker_per_zone = 2
 

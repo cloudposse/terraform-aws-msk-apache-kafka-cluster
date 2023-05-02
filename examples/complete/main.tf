@@ -13,7 +13,7 @@ module "vpc" {
 
 module "subnets" {
   source  = "cloudposse/dynamic-subnets/aws"
-  version = "2.0.4"
+  version = "2.1.0"
 
   availability_zones   = var.availability_zones
   vpc_id               = module.vpc.vpc_id
@@ -25,15 +25,10 @@ module "subnets" {
   context = module.this.context
 }
 
-resource "random_id" "config_id" {
-  count = module.this.enabled ? 1 : 0
-
-  byte_length = 2
-}
-
 module "kafka" {
   source = "../../"
 
+  name                  = module.this.id
   zone_id               = var.zone_id
   security_groups       = [module.vpc.vpc_default_security_group_id]
   vpc_id                = module.vpc.vpc_id
@@ -42,8 +37,6 @@ module "kafka" {
   broker_per_zone       = var.broker_per_zone
   broker_instance_type  = var.broker_instance_type
   public_access_enabled = var.public_access_enabled
-
-  name = "${module.this.name}${module.this.delimiter}${try(random_id.config_id[0].hex, "")}"
 
   context = module.this.context
 }
