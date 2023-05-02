@@ -73,22 +73,23 @@ data "aws_msk_broker_nodes" "default" {
   cluster_arn = one(aws_msk_cluster.default[*].arn)
 }
 
+# https://github.com/cloudposse/terraform-aws-security-group/blob/master/docs/migration-v1-v2.md
 module "security_group" {
   source  = "cloudposse/security-group/aws"
   version = "2.0.1"
 
   enabled = local.enabled && var.create_security_group
 
-  vpc_id                        = var.vpc_id
+  vpc_id = var.vpc_id
+
   security_group_name           = [var.security_group_name]
   create_before_destroy         = var.security_group_create_before_destroy
   preserve_security_group_id    = var.preserve_security_group_id
   security_group_create_timeout = var.security_group_create_timeout
   security_group_delete_timeout = var.security_group_delete_timeout
-
-  security_group_description = var.security_group_description
-  allow_all_egress           = true
-  rules                      = var.additional_security_group_rules
+  security_group_description    = var.security_group_description
+  allow_all_egress              = true
+  rules                         = var.additional_security_group_rules
 
   rule_matrix = [
     {
