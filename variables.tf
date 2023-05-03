@@ -17,7 +17,7 @@ variable "broker_per_zone" {
   description = "Number of Kafka brokers per zone."
   validation {
     condition     = var.broker_per_zone > 0
-    error_message = "The broker_per_zone value must be at atleast 1."
+    error_message = "The broker_per_zone value must be at least 1."
   }
 }
 
@@ -32,7 +32,7 @@ variable "subnet_ids" {
   description = "Subnet IDs for Client Broker"
   validation {
     condition     = length(var.subnet_ids) > 0
-    error_message = "The subnet_ids list must have at atleast 1 value."
+    error_message = "The subnet_ids list must have at least 1 value."
   }
 }
 

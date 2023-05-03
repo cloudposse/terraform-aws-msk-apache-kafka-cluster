@@ -31,7 +31,7 @@ module "kafka" {
   name                  = module.this.id
   zone_id               = var.zone_id
   vpc_id                = module.vpc.vpc_id
-  subnet_ids            = module.this.enabled ? module.subnets.private_subnet_ids : [""]
+  subnet_ids            = module.subnets.private_subnet_ids
   kafka_version         = var.kafka_version
   broker_per_zone       = var.broker_per_zone
   broker_instance_type  = var.broker_instance_type

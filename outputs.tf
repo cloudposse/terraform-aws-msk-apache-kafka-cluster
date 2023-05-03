@@ -57,3 +57,18 @@ output "cluster_name" {
   description = "MSK Cluster name"
   value       = one(aws_msk_cluster.default[*].cluster_name)
 }
+
+output "security_group_id" {
+  value       = module.security_group.id
+  description = "The ID of the created security group"
+}
+
+output "security_group_arn" {
+  value       = module.security_group.arn
+  description = "The ARN of the created security group"
+}
+
+output "security_group_name" {
+  value       = module.security_group.name
+  description = "The name of the created security group"
+}

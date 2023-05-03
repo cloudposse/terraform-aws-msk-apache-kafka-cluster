@@ -217,28 +217,3 @@ variable "revoke_security_group_rules_on_delete" {
     EOT
   default     = false
 }
-
-
-##
-##
-################# Outputs
-##
-## Move to `outputs.tf`
-##
-##
-
-output "security_group_id" {
-  value       = join("", module.security_group.*.id)
-  description = "The ID of the created security group"
-}
-
-output "security_group_arn" {
-  value       = join("", module.security_group.*.arn)
-  description = "The ARN of the created security group"
-}
-
-output "security_group_name" {
-  value       = join("", module.security_group.*.name)
-  description = "The name of the created security group"
-}
-
