@@ -82,7 +82,7 @@ module "security_group" {
 
   vpc_id = var.vpc_id
 
-  security_group_name           = [var.security_group_name]
+  security_group_name           = var.security_group_name
   create_before_destroy         = var.security_group_create_before_destroy
   preserve_security_group_id    = var.preserve_security_group_id
   security_group_create_timeout = var.security_group_create_timeout
