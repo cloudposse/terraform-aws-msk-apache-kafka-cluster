@@ -14,8 +14,13 @@ output "config_arn" {
 }
 
 output "hostname" {
-  description = "DNS hostname of MSK cluster"
+  description = "Comma separated list of MSK Cluster broker DNS hostnames"
   value       = module.kafka.hostname
+}
+
+output "hostnames" {
+  description = "List of MSK Cluster broker DNS hostnames"
+  value       = module.kafka.hostnames
 }
 
 output "security_group_id" {

@@ -28,13 +28,14 @@ module "subnets" {
 module "kafka" {
   source = "../../"
 
-  zone_id               = var.zone_id
-  vpc_id                = module.vpc.vpc_id
-  subnet_ids            = module.this.enabled ? module.subnets.private_subnet_ids : [""]
-  kafka_version         = var.kafka_version
-  broker_per_zone       = var.broker_per_zone
-  broker_instance_type  = var.broker_instance_type
-  public_access_enabled = var.public_access_enabled
+  zone_id                  = var.zone_id
+  vpc_id                   = module.vpc.vpc_id
+  subnet_ids               = module.this.enabled ? module.subnets.private_subnet_ids : [""]
+  kafka_version            = var.kafka_version
+  broker_per_zone          = var.broker_per_zone
+  broker_instance_type     = var.broker_instance_type
+  public_access_enabled    = var.public_access_enabled
+  broker_dns_records_count = var.broker_dns_records_count
 
   allowed_security_group_ids            = concat(var.allowed_security_group_ids, [module.vpc.vpc_default_security_group_id])
   allowed_cidr_blocks                   = var.allowed_cidr_blocks

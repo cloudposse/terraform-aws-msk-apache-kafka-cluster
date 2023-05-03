@@ -85,13 +85,12 @@ usage: |-
     # Cloud Posse recommends pinning every module to a specific version
     # version = "x.x.x"
 
+    kafka_version        = "3.3.2"
     namespace            = "eg"
     stage                = "prod"
     name                 = "app"
     vpc_id               = "vpc-XXXXXXXX"
-    zone_id              = "Z14EN2YD427LRQ"
     subnet_ids           = ["subnet-XXXXXXXXX", "subnet-YYYYYYYY"]
-    kafka_version        = "3.3.2"
     broker_per_zone      = 2
     broker_instance_type = "kafka.m5.large"
 

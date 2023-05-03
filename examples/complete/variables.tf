@@ -15,6 +15,19 @@ variable "zone_id" {
   description = "ZoneID for DNS Hostnames of MSK Brokers"
 }
 
+variable "broker_dns_records_count" {
+  type        = number
+  description = <<-EOT
+  This variable specifies how many DNS records to create for the broker endpoints in the DNS zone provided in the `zone_id` variable.
+  This corresponds to the total number of broker endpoints created by the module.
+  Calculate this number by multiplying the `broker_per_zone` variable by the subnet count.
+  This variable is necessary to prevent the Terraform error:
+  The "count" value depends on resource attributes that cannot be determined until apply, so Terraform cannot predict how many instances will be created.
+  EOT
+  default     = 0
+  nullable    = false
+}
+
 variable "kafka_version" {
   type        = string
   description = <<-EOT
