@@ -230,8 +230,6 @@ resource "aws_msk_scram_secret_association" "default" {
 }
 
 module "hostname" {
-  # Prevent the error
-  # The "count" value depends on resource attributes that cannot be determined until apply, so Terraform cannot predict how many instances will be created
   count = local.enabled && var.zone_id != null && var.zone_id != "" ? length(local.broker_endpoints) : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
