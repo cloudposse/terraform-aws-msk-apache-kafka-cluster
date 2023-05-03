@@ -4,11 +4,13 @@ variable "kafka_version" {
   The desired Kafka software version.
   Refer to https://docs.aws.amazon.com/msk/latest/developerguide/supported-kafka-versions.html for more details
   EOT
+  nullable    = false
 }
 
 variable "broker_instance_type" {
   type        = string
   description = "The instance type to use for the Kafka brokers"
+  nullable    = false
 }
 
 variable "broker_per_zone" {
@@ -19,12 +21,14 @@ variable "broker_per_zone" {
     condition     = var.broker_per_zone > 0
     error_message = "The broker_per_zone value must be at least 1."
   }
+  nullable = false
 }
 
 variable "broker_volume_size" {
   type        = number
   default     = 1000
   description = "The size in GiB of the EBS volume for the data drive on each broker node"
+  nullable    = false
 }
 
 variable "subnet_ids" {
@@ -34,6 +38,7 @@ variable "subnet_ids" {
     condition     = length(var.subnet_ids) > 0
     error_message = "The subnet_ids list must have at least 1 value."
   }
+  nullable = false
 }
 
 variable "zone_id" {
@@ -52,12 +57,14 @@ variable "client_broker" {
   type        = string
   default     = "TLS"
   description = "Encryption setting for data in transit between clients and brokers. Valid values: `TLS`, `TLS_PLAINTEXT`, and `PLAINTEXT`"
+  nullable    = false
 }
 
 variable "encryption_in_cluster" {
   type        = bool
   default     = true
   description = "Whether data communication among broker nodes is encrypted"
+  nullable    = false
 }
 
 variable "encryption_at_rest_kms_key_arn" {
@@ -70,66 +77,77 @@ variable "enhanced_monitoring" {
   type        = string
   default     = "DEFAULT"
   description = "Specify the desired enhanced MSK CloudWatch monitoring level. Valid values: `DEFAULT`, `PER_BROKER`, and `PER_TOPIC_PER_BROKER`"
+  nullable    = false
 }
 
 variable "certificate_authority_arns" {
   type        = list(string)
   default     = []
   description = "List of ACM Certificate Authority Amazon Resource Names (ARNs) to be used for TLS client authentication"
+  nullable    = false
 }
 
 variable "client_allow_unauthenticated" {
   type        = bool
   default     = false
   description = "Enables unauthenticated access."
+  nullable    = false
 }
 
 variable "client_sasl_scram_enabled" {
   type        = bool
   default     = false
   description = "Enables SCRAM client authentication via AWS Secrets Manager (cannot be set to `true` at the same time as `client_tls_auth_enabled`)."
+  nullable    = false
 }
 
 variable "client_sasl_scram_secret_association_enabled" {
   type        = bool
   default     = true
   description = "Enables the list of AWS Secrets Manager secret ARNs for scram authentication"
+  nullable    = false
 }
 
 variable "client_sasl_scram_secret_association_arns" {
   type        = list(string)
   default     = []
   description = "List of AWS Secrets Manager secret ARNs for scram authentication (cannot be set to `true` at the same time as `client_tls_auth_enabled`)."
+  nullable    = false
 }
 
 variable "client_sasl_iam_enabled" {
   type        = bool
   default     = false
   description = "Enables client authentication via IAM policies (cannot be set to `true` at the same time as `client_sasl_*_enabled`)."
+  nullable    = false
 }
 
 variable "client_tls_auth_enabled" {
   type        = bool
   default     = false
   description = "Set `true` to enable the Client TLS Authentication"
+  nullable    = false
 }
 
 variable "jmx_exporter_enabled" {
   type        = bool
   default     = false
   description = "Set `true` to enable the JMX Exporter"
+  nullable    = false
 }
 
 variable "node_exporter_enabled" {
   type        = bool
   default     = false
   description = "Set `true` to enable the Node Exporter"
+  nullable    = false
 }
 
 variable "cloudwatch_logs_enabled" {
   type        = bool
   default     = false
   description = "Indicates whether you want to enable or disable streaming broker logs to Cloudwatch Logs"
+  nullable    = false
 }
 
 variable "cloudwatch_logs_log_group" {
@@ -142,6 +160,7 @@ variable "firehose_logs_enabled" {
   type        = bool
   default     = false
   description = "Indicates whether you want to enable or disable streaming broker logs to Kinesis Data Firehose"
+  nullable    = false
 }
 
 variable "firehose_delivery_stream" {
@@ -154,6 +173,7 @@ variable "s3_logs_enabled" {
   type        = bool
   default     = false
   description = " Indicates whether you want to enable or disable streaming broker logs to S3"
+  nullable    = false
 }
 
 variable "s3_logs_bucket" {
@@ -172,12 +192,14 @@ variable "properties" {
   type        = map(string)
   default     = {}
   description = "Contents of the server.properties file. Supported properties are documented in the [MSK Developer Guide](https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html)"
+  nullable    = false
 }
 
 variable "autoscaling_enabled" {
   type        = bool
   default     = true
   description = "To automatically expand your cluster's storage in response to increased usage, you can enable this. [More info](https://docs.aws.amazon.com/msk/latest/developerguide/msk-autoexpand.html)"
+  nullable    = false
 }
 
 variable "storage_autoscaling_target_value" {
@@ -196,16 +218,19 @@ variable "storage_autoscaling_disable_scale_in" {
   type        = bool
   default     = false
   description = "If the value is true, scale in is disabled and the target tracking policy won't remove capacity from the scalable resource"
+  nullable    = false
 }
 
 variable "security_group_rule_description" {
   type        = string
   default     = "Allow inbound %s traffic"
   description = "The description to place on each security group rule. The %s will be replaced with the protocol name"
+  nullable    = false
 }
 
 variable "public_access_enabled" {
   type        = bool
   default     = false
   description = "Enable public access to MSK cluster (given that all of the requirements are met)"
+  nullable    = false
 }

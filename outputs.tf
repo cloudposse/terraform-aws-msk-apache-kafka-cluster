@@ -23,9 +23,9 @@ output "bootstrap_brokers_iam" {
   value       = join(",", aws_msk_cluster.default[*].bootstrap_brokers_sasl_iam)
 }
 
-output "all_brokers" {
-  description = "A list of all brokers"
-  value       = local.brokers
+output "broker_endpoints" {
+  description = "A list of broker endpoints"
+  value       = local.broker_endpoints
 }
 
 output "current_version" {

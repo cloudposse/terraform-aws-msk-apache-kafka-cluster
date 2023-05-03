@@ -1,7 +1,7 @@
 locals {
   enabled = module.this.enabled
 
-  brokers = local.enabled ? flatten(data.aws_msk_broker_nodes.default[0].node_info_list[*].endpoints) : []
+  broker_endpoints = local.enabled ? flatten(data.aws_msk_broker_nodes.default[0].node_info_list[*].endpoints) : []
 
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
@@ -230,14 +230,16 @@ resource "aws_msk_scram_secret_association" "default" {
 }
 
 module "hostname" {
-  count = local.enabled && var.zone_id != null && var.zone_id != "" ? (var.broker_per_zone * length(var.subnet_ids)) : 0
+  # Prevent the error
+  # The "count" value depends on resource attributes that cannot be determined until apply, so Terraform cannot predict how many instances will be created
+  count = local.enabled && var.zone_id != null && var.zone_id != "" ? length(local.broker_endpoints) : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.3"
 
   zone_id  = var.zone_id
   dns_name = var.custom_broker_dns_name == null ? "${module.this.name}-broker-${count.index + 1}" : replace(var.custom_broker_dns_name, "%%ID%%", count.index + 1)
-  records  = local.enabled ? [local.brokers[count.index]] : []
+  records  = local.enabled ? [local.broker_endpoints[count.index]] : []
 
   context = module.this.context
 }
