@@ -1,7 +1,8 @@
 locals {
   enabled = module.this.enabled
 
-  brokers = local.enabled ? flatten(data.aws_msk_broker_nodes.default[0].node_info_list[*].endpoints) : []
+  broker_endpoints = local.enabled ? flatten(data.aws_msk_broker_nodes.default[0].node_info_list[*].endpoints) : []
+
   # If var.storage_autoscaling_max_capacity is not set, don't autoscale past current size
   broker_volume_size_max = coalesce(var.storage_autoscaling_max_capacity, var.broker_volume_size)
 
@@ -69,25 +70,30 @@ locals {
 data "aws_msk_broker_nodes" "default" {
   count = local.enabled ? 1 : 0
 
-  cluster_arn = join("", aws_msk_cluster.default[*].arn)
+  cluster_arn = one(aws_msk_cluster.default[*].arn)
 }
 
-module "broker_security_group" {
+# https://github.com/cloudposse/terraform-aws-security-group/blob/master/docs/migration-v1-v2.md
+module "security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "1.0.1"
+  version = "2.0.1"
 
-  enabled                       = local.enabled && var.create_security_group
+  enabled = local.enabled && var.create_security_group
+
+  vpc_id = var.vpc_id
+
   security_group_name           = var.security_group_name
   create_before_destroy         = var.security_group_create_before_destroy
+  preserve_security_group_id    = var.preserve_security_group_id
   security_group_create_timeout = var.security_group_create_timeout
   security_group_delete_timeout = var.security_group_delete_timeout
+  security_group_description    = var.security_group_description
+  allow_all_egress              = true
+  rules                         = var.additional_security_group_rules
 
-  security_group_description = var.security_group_description
-  allow_all_egress           = true
-  rules                      = var.additional_security_group_rules
   rule_matrix = [
     {
-      source_security_group_ids = local.allowed_security_group_ids
+      source_security_group_ids = var.allowed_security_group_ids
       cidr_blocks               = var.allowed_cidr_blocks
       rules = [
         for protocol_key, protocol in local.protocols : {
@@ -101,13 +107,13 @@ module "broker_security_group" {
       ]
     }
   ]
-  vpc_id = var.vpc_id
 
   context = module.this.context
 }
 
 resource "aws_msk_configuration" "config" {
-  count          = local.enabled ? 1 : 0
+  count = local.enabled ? 1 : 0
+
   kafka_versions = [var.kafka_version]
   name           = join("-", [module.this.id, replace(var.kafka_version, ".", "-")])
   description    = "Manages an Amazon Managed Streaming for Kafka configuration"
@@ -123,21 +129,29 @@ resource "aws_msk_cluster" "default" {
   #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true
   #bridgecrew:skip=BC_AWS_LOGGING_18:Skipping `Amazon MSK cluster logging is not enabled` check since it can be enabled with cloudwatch_logs_enabled = true
   #bridgecrew:skip=BC_AWS_GENERAL_32:Skipping `MSK cluster encryption at rest and in transit is not enabled` check since it can be enabled with encryption_in_cluster = true
-  count                  = local.enabled ? 1 : 0
+  count = local.enabled ? 1 : 0
+
   cluster_name           = module.this.id
   kafka_version          = var.kafka_version
   number_of_broker_nodes = var.broker_per_zone * length(var.subnet_ids)
   enhanced_monitoring    = var.enhanced_monitoring
 
   broker_node_group_info {
-    instance_type = var.broker_instance_type
+    instance_type   = var.broker_instance_type
+    client_subnets  = var.subnet_ids
+    security_groups = var.create_security_group ? concat(var.associated_security_group_ids, [module.security_group.id]) : var.associated_security_group_ids
+
     storage_info {
       ebs_storage_info {
         volume_size = var.broker_volume_size
       }
     }
-    client_subnets  = var.subnet_ids
-    security_groups = var.create_security_group ? concat(var.associated_security_group_ids, [module.broker_security_group.id]) : var.associated_security_group_ids
+
+    connectivity_info {
+      public_access {
+        type = var.public_access_enabled ? "SERVICE_PROVIDED_EIPS" : "DISABLED"
+      }
+    }
   }
 
   configuration_info {
@@ -220,15 +234,14 @@ resource "aws_msk_scram_secret_association" "default" {
 }
 
 module "hostname" {
-  count = local.enabled && var.zone_id != null ? (var.broker_per_zone * length(var.subnet_ids)) : 0
+  count = local.enabled && var.zone_id != null && var.zone_id != "" ? var.broker_dns_records_count : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
   version = "0.12.3"
 
-  enabled  = local.enabled && length(var.zone_id) > 0
-  dns_name = var.custom_broker_dns_name == null ? "${module.this.name}-broker-${count.index + 1}" : replace(var.custom_broker_dns_name, "%%ID%%", count.index + 1)
   zone_id  = var.zone_id
-  records  = local.enabled ? [local.brokers[count.index]] : []
+  dns_name = var.custom_broker_dns_name == null ? "${module.this.name}-broker-${count.index + 1}" : replace(var.custom_broker_dns_name, "%%ID%%", count.index + 1)
+  records  = local.enabled ? [local.broker_endpoints[count.index]] : []
 
   context = module.this.context
 }
@@ -249,11 +262,12 @@ resource "aws_appautoscaling_policy" "default" {
   name               = "${aws_msk_cluster.default[0].cluster_name}-broker-scaling"
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_msk_cluster.default[0].arn
-  scalable_dimension = join("", aws_appautoscaling_target.default[*].scalable_dimension)
-  service_namespace  = join("", aws_appautoscaling_target.default[*].service_namespace)
+  scalable_dimension = one(aws_appautoscaling_target.default[*].scalable_dimension)
+  service_namespace  = one(aws_appautoscaling_target.default[*].service_namespace)
 
   target_tracking_scaling_policy_configuration {
     disable_scale_in = var.storage_autoscaling_disable_scale_in
+
     predefined_metric_specification {
       predefined_metric_type = "KafkaBrokerStorageUtilization"
     }
