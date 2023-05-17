@@ -88,8 +88,9 @@ module "security_group" {
   security_group_create_timeout = var.security_group_create_timeout
   security_group_delete_timeout = var.security_group_delete_timeout
   security_group_description    = var.security_group_description
-  allow_all_egress              = true
+  allow_all_egress              = var.allow_all_egress
   rules                         = var.additional_security_group_rules
+  inline_rules_enabled          = var.inline_rules_enabled
 
   rule_matrix = [
     {
@@ -116,7 +117,7 @@ resource "aws_msk_configuration" "config" {
 
   kafka_versions = [var.kafka_version]
   name           = join("-", [module.this.id, replace(var.kafka_version, ".", "-")])
-  description    = "Manages an Amazon Managed Streaming for Kafka configuration"
+  description    = "Configuration for Amazon Managed Streaming for Kafka"
 
   server_properties = join("\n", [for k in keys(var.properties) : format("%s = %s", k, var.properties[k])])
 

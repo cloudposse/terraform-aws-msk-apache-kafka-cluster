@@ -1,66 +1,86 @@
 output "cluster_arn" {
-  description = "Amazon Resource Name (ARN) of the MSK cluster"
   value       = one(aws_msk_cluster.default[*].arn)
-}
-
-output "bootstrap_brokers" {
-  description = "A comma separated list of one or more hostname:port pairs of kafka brokers suitable to boostrap connectivity to the kafka cluster"
-  value       = join(",", aws_msk_cluster.default[*].bootstrap_brokers)
-}
-
-output "bootstrap_brokers_tls" {
-  description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity to the kafka cluster"
-  value       = join(",", aws_msk_cluster.default[*].bootstrap_brokers_tls)
-}
-
-output "bootstrap_brokers_scram" {
-  description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity using SASL/SCRAM to the kafka cluster."
-  value       = join(",", aws_msk_cluster.default[*].bootstrap_brokers_sasl_scram)
-}
-
-output "bootstrap_brokers_iam" {
-  description = "A comma separated list of one or more DNS names (or IPs) and TLS port pairs kafka brokers suitable to boostrap connectivity using SASL/IAM to the kafka cluster."
-  value       = join(",", aws_msk_cluster.default[*].bootstrap_brokers_sasl_iam)
-}
-
-output "broker_endpoints" {
-  description = "A list of broker endpoints"
-  value       = local.broker_endpoints
-}
-
-output "current_version" {
-  description = "Current version of the MSK Cluster used for updates"
-  value       = one(aws_msk_cluster.default[*].current_version)
-}
-
-output "zookeeper_connect_string" {
-  description = "A comma separated list of one or more hostname:port pairs to use to connect to the Apache Zookeeper cluster"
-  value       = join(",", aws_msk_cluster.default[*].zookeeper_connect_string)
-}
-
-output "config_arn" {
-  description = "Amazon Resource Name (ARN) of the configuration"
-  value       = one(aws_msk_configuration.config[*].arn)
-}
-
-output "latest_revision" {
-  description = "Latest revision of the configuration"
-  value       = one(aws_msk_configuration.config[*].latest_revision)
-}
-
-output "hostname" {
-  description = "Comma separated list of MSK Cluster broker DNS hostnames"
-  value       = join(",", module.hostname[*].hostname)
-}
-
-output "hostnames" {
-  description = "List of MSK Cluster broker DNS hostnames"
-  value       = module.hostname[*].hostname
+  description = "Amazon Resource Name (ARN) of the MSK cluster"
 }
 
 output "cluster_name" {
-  description = "MSK Cluster name"
   value       = one(aws_msk_cluster.default[*].cluster_name)
+  description = "MSK Cluster name"
+}
+
+output "storage_mode" {
+  value       = one(aws_msk_cluster.default[*].storage_mode)
+  description = "Storage mode for supported storage tiers"
+}
+
+output "bootstrap_brokers" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers)
+  description = "Comma separated list of one or more hostname:port pairs of Kafka brokers suitable to bootstrap connectivity to the Kafka cluster"
+}
+
+output "bootstrap_brokers_tls" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers_tls)
+  description = "Comma separated list of one or more DNS names (or IP addresses) and TLS port pairs for access to the Kafka cluster using TLS"
+}
+
+output "bootstrap_brokers_public_tls" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers_public_tls)
+  description = "Comma separated list of one or more DNS names (or IP addresses) and TLS port pairs for public access to the Kafka cluster using TLS"
+}
+
+output "bootstrap_brokers_sasl_scram" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers_sasl_scram)
+  description = "Comma separated list of one or more DNS names (or IP addresses) and SASL SCRAM port pairs for access to the Kafka cluster using SASL/SCRAM"
+}
+
+output "bootstrap_brokers_public_sasl_scram" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers_public_sasl_scram)
+  description = "Comma separated list of one or more DNS names (or IP addresses) and SASL SCRAM port pairs for public access to the Kafka cluster using SASL/SCRAM"
+}
+
+output "bootstrap_brokers_sasl_iam" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers_sasl_iam)
+  description = "Comma separated list of one or more DNS names (or IP addresses) and SASL IAM port pairs for access to the Kafka cluster using SASL/IAM"
+}
+
+output "bootstrap_brokers_public_sasl_iam" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers_public_sasl_iam)
+  description = "Comma separated list of one or more DNS names (or IP addresses) and SASL IAM port pairs for public access to the Kafka cluster using SASL/IAM"
+}
+
+output "zookeeper_connect_string" {
+  value       = one(aws_msk_cluster.default[*].zookeeper_connect_string)
+  description = "Comma separated list of one or more hostname:port pairs to connect to the Apache Zookeeper cluster"
+}
+
+output "zookeeper_connect_string_tls" {
+  value       = one(aws_msk_cluster.default[*].zookeeper_connect_string_tls)
+  description = "Comma separated list of one or more hostname:port pairs to connect to the Apache Zookeeper cluster via TLS"
+}
+
+output "broker_endpoints" {
+  value       = local.broker_endpoints
+  description = "List of broker endpoints"
+}
+
+output "current_version" {
+  value       = one(aws_msk_cluster.default[*].current_version)
+  description = "Current version of the MSK Cluster"
+}
+
+output "config_arn" {
+  value       = one(aws_msk_configuration.config[*].arn)
+  description = "Amazon Resource Name (ARN) of the MSK configuration"
+}
+
+output "latest_revision" {
+  value       = one(aws_msk_configuration.config[*].latest_revision)
+  description = "Latest revision of the MSK configuration"
+}
+
+output "hostnames" {
+  value       = module.hostname[*].hostname
+  description = "List of MSK Cluster broker DNS hostnames"
 }
 
 output "security_group_id" {
@@ -74,6 +94,5 @@ output "security_group_arn" {
 }
 
 output "security_group_name" {
-  value       = module.security_group.name
-  description = "The name of the created security group"
+  value = module.security_group.name
 }
