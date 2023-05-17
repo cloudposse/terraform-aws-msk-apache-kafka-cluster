@@ -82,18 +82,15 @@ module "security_group" {
 
   vpc_id = var.vpc_id
 
-  security_group_name                   = var.security_group_name
-  create_before_destroy                 = var.security_group_create_before_destroy
-  preserve_security_group_id            = var.preserve_security_group_id
-  security_group_create_timeout         = var.security_group_create_timeout
-  security_group_delete_timeout         = var.security_group_delete_timeout
-  security_group_description            = var.security_group_description
-  allow_all_egress                      = var.allow_all_egress
-  rules                                 = var.additional_security_group_rules
-  allowed_ipv6_cidr_blocks              = var.allowed_ipv6_cidr_blocks
-  allowed_ipv6_prefix_list_ids          = var.allowed_ipv6_prefix_list_ids
-  inline_rules_enabled                  = var.inline_rules_enabled
-  revoke_security_group_rules_on_delete = var.revoke_security_group_rules_on_delete
+  security_group_name           = var.security_group_name
+  create_before_destroy         = var.security_group_create_before_destroy
+  preserve_security_group_id    = var.preserve_security_group_id
+  security_group_create_timeout = var.security_group_create_timeout
+  security_group_delete_timeout = var.security_group_delete_timeout
+  security_group_description    = var.security_group_description
+  allow_all_egress              = var.allow_all_egress
+  rules                         = var.additional_security_group_rules
+  inline_rules_enabled          = var.inline_rules_enabled
 
   rule_matrix = [
     {
