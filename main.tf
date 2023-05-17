@@ -237,7 +237,7 @@ module "hostname" {
   count = local.enabled && var.zone_id != null && var.zone_id != "" ? var.broker_dns_records_count : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.3"
+  version = "0.13.0"
 
   zone_id  = var.zone_id
   dns_name = var.custom_broker_dns_name == null ? "${module.this.name}-broker-${count.index + 1}" : replace(var.custom_broker_dns_name, "%%ID%%", count.index + 1)
