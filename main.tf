@@ -177,12 +177,9 @@ resource "aws_msk_cluster" "default" {
           certificate_authority_arns = var.certificate_authority_arns
         }
       }
-      dynamic "sasl" {
-        for_each = var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
-        content {
-          scram = var.client_sasl_scram_enabled
-          iam   = var.client_sasl_iam_enabled
-        }
+      sasl {
+        scram = var.client_sasl_scram_enabled
+        iam   = var.client_sasl_iam_enabled
       }
       unauthenticated = var.client_allow_unauthenticated
     }
