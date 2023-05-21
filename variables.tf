@@ -16,7 +16,7 @@ variable "broker_instance_type" {
 variable "broker_per_zone" {
   type        = number
   default     = 1
-  description = "Number of Kafka brokers per zone."
+  description = "Number of Kafka brokers per zone"
   validation {
     condition     = var.broker_per_zone > 0
     error_message = "The broker_per_zone value must be at least 1."
@@ -103,14 +103,14 @@ variable "certificate_authority_arns" {
 variable "client_allow_unauthenticated" {
   type        = bool
   default     = false
-  description = "Enables unauthenticated access."
+  description = "Enable unauthenticated access"
   nullable    = false
 }
 
 variable "client_sasl_scram_enabled" {
   type        = bool
   default     = false
-  description = "Enables SCRAM client authentication via AWS Secrets Manager (cannot be set to `true` at the same time as `client_tls_auth_enabled`)."
+  description = "Enables SCRAM client authentication via AWS Secrets Manager (cannot be set to `true` at the same time as `client_tls_auth_enabled`)"
   nullable    = false
 }
 
@@ -124,14 +124,14 @@ variable "client_sasl_scram_secret_association_enabled" {
 variable "client_sasl_scram_secret_association_arns" {
   type        = list(string)
   default     = []
-  description = "List of AWS Secrets Manager secret ARNs for scram authentication (cannot be set to `true` at the same time as `client_tls_auth_enabled`)."
+  description = "List of AWS Secrets Manager secret ARNs for scram authentication (cannot be set to `true` at the same time as `client_tls_auth_enabled`)"
   nullable    = false
 }
 
 variable "client_sasl_iam_enabled" {
   type        = bool
   default     = false
-  description = "Enables client authentication via IAM policies (cannot be set to `true` at the same time as `client_sasl_*_enabled`)."
+  description = "Enables client authentication via IAM policies (cannot be set to `true` at the same time as `client_sasl_*_enabled`)"
   nullable    = false
 }
 

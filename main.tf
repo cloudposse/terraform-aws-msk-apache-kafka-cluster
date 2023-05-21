@@ -168,23 +168,20 @@ resource "aws_msk_cluster" "default" {
     encryption_at_rest_kms_key_arn = var.encryption_at_rest_kms_key_arn
   }
 
-  dynamic "client_authentication" {
-    for_each = var.client_tls_auth_enabled || var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
-    content {
-      dynamic "tls" {
-        for_each = var.client_tls_auth_enabled ? [1] : []
-        content {
-          certificate_authority_arns = var.certificate_authority_arns
-        }
+  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster.html#client_authentication
+  client_authentication {
+    unauthenticated = var.client_allow_unauthenticated
+
+    dynamic "tls" {
+      for_each = var.client_tls_auth_enabled ? [1] : []
+      content {
+        certificate_authority_arns = var.certificate_authority_arns
       }
-      dynamic "sasl" {
-        for_each = var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
-        content {
-          scram = var.client_sasl_scram_enabled
-          iam   = var.client_sasl_iam_enabled
-        }
-      }
-      unauthenticated = var.client_allow_unauthenticated
+    }
+
+    sasl {
+      scram = var.client_sasl_scram_enabled
+      iam   = var.client_sasl_iam_enabled
     }
   }
 

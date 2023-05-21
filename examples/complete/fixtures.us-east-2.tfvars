@@ -11,7 +11,7 @@ name = "msk-test"
 availability_zones = ["us-east-2a", "us-east-2b"]
 
 # https://docs.aws.amazon.com/msk/latest/developerguide/supported-kafka-versions.html
-kafka_version = "3.3.2"
+kafka_version = "3.4.0"
 
 broker_per_zone = 2
 
