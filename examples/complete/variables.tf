@@ -55,3 +55,52 @@ variable "public_access_enabled" {
   description = "Enable public access to MSK cluster (given that all of the requirements are met)"
   nullable    = false
 }
+
+variable "client_allow_unauthenticated" {
+  type        = bool
+  default     = false
+  description = "Enable unauthenticated access"
+  nullable    = false
+}
+
+variable "client_sasl_iam_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable client authentication via IAM policies. Cannot be set to `true` at the same time as `client_tls_auth_enabled`"
+  nullable    = false
+}
+
+variable "client_tls_auth_enabled" {
+  type        = bool
+  default     = false
+  description = "Set `true` to enable the Client TLS Authentication"
+  nullable    = false
+}
+
+variable "client_sasl_scram_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable SCRAM client authentication via AWS Secrets Manager. Cannot be set to `true` at the same time as `client_tls_auth_enabled`"
+  nullable    = false
+}
+
+variable "certificate_authority_arns" {
+  type        = list(string)
+  default     = []
+  description = "List of ACM Certificate Authority Amazon Resource Names (ARNs) to be used for TLS client authentication"
+  nullable    = false
+}
+
+variable "client_sasl_scram_secret_association_enabled" {
+  type        = bool
+  default     = true
+  description = "Enable the list of AWS Secrets Manager secret ARNs for SCRAM authentication"
+  nullable    = false
+}
+
+variable "client_sasl_scram_secret_association_arns" {
+  type        = list(string)
+  default     = []
+  description = "List of AWS Secrets Manager secret ARNs for SCRAM authentication"
+  nullable    = false
+}

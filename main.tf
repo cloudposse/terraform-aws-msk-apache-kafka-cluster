@@ -170,6 +170,7 @@ resource "aws_msk_cluster" "default" {
 
   # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster.html#client_authentication
   client_authentication {
+    # Unauthenticated cannot be set to `false` without enabling any authentication mechanisms
     unauthenticated = var.client_allow_unauthenticated
 
     dynamic "tls" {

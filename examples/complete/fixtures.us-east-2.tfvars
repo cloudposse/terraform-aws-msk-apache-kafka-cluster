@@ -27,3 +27,6 @@ zone_id = "Z3SO0TKDDQ0RGG"
 # This variable is necessary to prevent the Terraform error:
 # The "count" value depends on resource attributes that cannot be determined until apply, so Terraform cannot predict how many instances will be created.
 broker_dns_records_count = 4
+
+# Unauthenticated cannot be set to `false` without enabling any authentication mechanisms
+client_allow_unauthenticated = true

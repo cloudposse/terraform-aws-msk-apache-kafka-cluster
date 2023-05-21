@@ -51,5 +51,14 @@ module "kafka" {
   additional_security_group_rules      = var.additional_security_group_rules
   inline_rules_enabled                 = var.inline_rules_enabled
 
+  client_allow_unauthenticated                 = var.client_allow_unauthenticated
+  client_sasl_scram_enabled                    = var.client_sasl_scram_enabled
+  client_sasl_iam_enabled                      = var.client_sasl_iam_enabled
+  client_tls_auth_enabled                      = var.client_tls_auth_enabled
+  client_sasl_scram_secret_association_enabled = var.client_sasl_scram_secret_association_enabled
+  client_sasl_scram_secret_association_arns    = var.client_sasl_scram_secret_association_arns
+
+  certificate_authority_arns = var.certificate_authority_arns
+
   context = module.this.context
 }
