@@ -11,7 +11,7 @@ name = "msk-test"
 availability_zones = ["us-east-2a", "us-east-2b"]
 
 # https://docs.aws.amazon.com/msk/latest/developerguide/supported-kafka-versions.html
-kafka_version = "3.3.2"
+kafka_version = "3.4.0"
 
 broker_per_zone = 2
 
@@ -27,3 +27,6 @@ zone_id = "Z3SO0TKDDQ0RGG"
 # This variable is necessary to prevent the Terraform error:
 # The "count" value depends on resource attributes that cannot be determined until apply, so Terraform cannot predict how many instances will be created.
 broker_dns_records_count = 4
+
+# Unauthenticated cannot be set to `false` without enabling any authentication mechanisms
+client_allow_unauthenticated = true

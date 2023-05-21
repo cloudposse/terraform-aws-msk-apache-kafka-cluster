@@ -4,7 +4,7 @@ provider "aws" {
 
 module "vpc" {
   source  = "cloudposse/vpc/aws"
-  version = "2.0.0"
+  version = "2.1.0"
 
   ipv4_primary_cidr_block = "172.16.0.0/16"
 
@@ -13,7 +13,7 @@ module "vpc" {
 
 module "subnets" {
   source  = "cloudposse/dynamic-subnets/aws"
-  version = "2.1.0"
+  version = "2.3.0"
 
   availability_zones   = var.availability_zones
   vpc_id               = module.vpc.vpc_id
@@ -50,6 +50,15 @@ module "kafka" {
   allow_all_egress                     = var.allow_all_egress
   additional_security_group_rules      = var.additional_security_group_rules
   inline_rules_enabled                 = var.inline_rules_enabled
+
+  client_allow_unauthenticated                 = var.client_allow_unauthenticated
+  client_sasl_scram_enabled                    = var.client_sasl_scram_enabled
+  client_sasl_iam_enabled                      = var.client_sasl_iam_enabled
+  client_tls_auth_enabled                      = var.client_tls_auth_enabled
+  client_sasl_scram_secret_association_enabled = var.client_sasl_scram_secret_association_enabled
+  client_sasl_scram_secret_association_arns    = var.client_sasl_scram_secret_association_arns
+
+  certificate_authority_arns = var.certificate_authority_arns
 
   context = module.this.context
 }

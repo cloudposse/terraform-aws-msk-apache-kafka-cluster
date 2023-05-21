@@ -76,7 +76,7 @@ data "aws_msk_broker_nodes" "default" {
 # https://github.com/cloudposse/terraform-aws-security-group/blob/master/docs/migration-v1-v2.md
 module "security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "2.0.1"
+  version = "2.1.0"
 
   enabled = local.enabled && var.create_security_group
 
@@ -168,23 +168,21 @@ resource "aws_msk_cluster" "default" {
     encryption_at_rest_kms_key_arn = var.encryption_at_rest_kms_key_arn
   }
 
-  dynamic "client_authentication" {
-    for_each = var.client_tls_auth_enabled || var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
-    content {
-      dynamic "tls" {
-        for_each = var.client_tls_auth_enabled ? [1] : []
-        content {
-          certificate_authority_arns = var.certificate_authority_arns
-        }
+  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/msk_cluster.html#client_authentication
+  client_authentication {
+    # Unauthenticated cannot be set to `false` without enabling any authentication mechanisms
+    unauthenticated = var.client_allow_unauthenticated
+
+    dynamic "tls" {
+      for_each = var.client_tls_auth_enabled ? [1] : []
+      content {
+        certificate_authority_arns = var.certificate_authority_arns
       }
-      dynamic "sasl" {
-        for_each = var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
-        content {
-          scram = var.client_sasl_scram_enabled
-          iam   = var.client_sasl_iam_enabled
-        }
-      }
-      unauthenticated = var.client_allow_unauthenticated
+    }
+
+    sasl {
+      scram = var.client_sasl_scram_enabled
+      iam   = var.client_sasl_iam_enabled
     }
   }
 
@@ -238,7 +236,7 @@ module "hostname" {
   count = local.enabled && var.zone_id != null && var.zone_id != "" ? var.broker_dns_records_count : 0
 
   source  = "cloudposse/route53-cluster-hostname/aws"
-  version = "0.12.3"
+  version = "0.13.0"
 
   zone_id  = var.zone_id
   dns_name = var.custom_broker_dns_name == null ? "${module.this.name}-broker-${count.index + 1}" : replace(var.custom_broker_dns_name, "%%ID%%", count.index + 1)
