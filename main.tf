@@ -219,6 +219,8 @@ resource "aws_msk_cluster" "default" {
     ignore_changes = [
       # Ignore changes to ebs_volume_size in favor of autoscaling policy
       broker_node_group_info[0].storage_info[0].ebs_storage_info[0].volume_size,
+      # Ignore changes to avoid issues like https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster/issues/52
+      client_authentication,
     ]
   }
 
