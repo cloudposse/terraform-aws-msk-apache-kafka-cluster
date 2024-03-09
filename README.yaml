@@ -23,6 +23,9 @@ github_repo: cloudposse/terraform-aws-msk-apache-kafka-cluster
 
 # Badges to display
 badges:
+  - name: Last Updated
+    image: https://img.shields.io/github/last-commit/cloudposse/terraform-aws-msk-apache-kafka-cluster.svg?style=for-the-badge
+    url: https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster/commits
   - name: Latest Release
     image: https://img.shields.io/github/release/cloudposse/terraform-aws-msk-apache-kafka-cluster.svg?style=for-the-badge
     url: https://github.com/cloudposse/terraform-aws-msk-apache-kafka-cluster/releases/latest
