@@ -61,9 +61,8 @@ module "kafka" {
   certificate_authority_arns = var.certificate_authority_arns
 
   ## Use custom broker DNS name to avoid resource conflict for concurrent test runs
-  ## We use `%%%%ID%%%%` because format will replace it with `%%ID%%` 
-  ## that is expected placeholder for cluster node number in `custom_broker_dns_name`
-  custom_broker_dns_name = format("msk-test-broker-%s-%%%%ID%%%%", var.attributes[0])
+  ## `%%ID%%` is the expected placeholder for cluster node number in `custom_broker_dns_name`
+  custom_broker_dns_name = format("msk-test-broker-%s-%s", var.attributes[0], "%%ID%%")
 
   context = module.this.context
 }
