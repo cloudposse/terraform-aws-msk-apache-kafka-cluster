@@ -33,7 +33,7 @@ func TestExamplesComplete(t *testing.T) {
 		VarFiles: varFiles,
 		Vars: map[string]interface{}{
 			"attributes": attributes,
-      "custom_broker_dns_name": dns_name
+      "custom_broker_dns_name": dns_name,
 		},
 	}
 
