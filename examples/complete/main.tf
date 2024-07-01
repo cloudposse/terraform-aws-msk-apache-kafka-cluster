@@ -61,7 +61,7 @@ module "kafka" {
   certificate_authority_arns = var.certificate_authority_arns
 
   ## Use custom broker DNS name to avoid resource conflict for concurrent test runs
-  custom_broker_dns_name = format("msk-test-broker-%s-%%ID%%", var.attributes[0])
+  custom_broker_dns_name = format("msk-test-broker-%s-%%%%ID%%%%", var.attributes[0])
 
   context = module.this.context
 }
