@@ -29,6 +29,8 @@ module "kafka" {
   source = "../../"
 
   zone_id                  = var.zone_id
+  ## Use custom broker DNS name to avoid resource conflict for concurrent test runs
+  custom_broker_dns_name   = format("msk-test-broker-%s-%%ID%%", var.attributes[0])
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = module.this.enabled ? module.subnets.private_subnet_ids : [""]
   kafka_version            = var.kafka_version
