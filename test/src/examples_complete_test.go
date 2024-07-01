@@ -16,6 +16,7 @@ func TestExamplesComplete(t *testing.T) {
 	t.Parallel()
 	randID := strings.ToLower(random.UniqueId())
 	attributes := []string{randID}
+  dns_name := fmt.Sprintf("msk-test-broker-%s-%%ID%%", randID)
 
 	rootFolder := "../../"
 	terraformFolderRelativeToRoot := "examples/complete"
@@ -31,6 +32,7 @@ func TestExamplesComplete(t *testing.T) {
 		VarFiles: varFiles,
 		Vars: map[string]interface{}{
 			"attributes": attributes,
+      "custom_broker_dns_name": dns_name
 		},
 	}
 
