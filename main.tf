@@ -76,7 +76,7 @@ data "aws_msk_broker_nodes" "default" {
 # https://github.com/cloudposse/terraform-aws-security-group/blob/master/docs/migration-v1-v2.md
 module "security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "2.1.0"
+  version = "2.2.0"
 
   enabled = local.enabled && var.create_security_group
 
@@ -226,8 +226,7 @@ resource "aws_msk_cluster" "default" {
 
   lifecycle {
     ignore_changes = [
-      # Ignore changes to ebs_volume_size in favor of autoscaling policy
-      broker_node_group_info[0].storage_info[0].ebs_storage_info[0].volume_size,
+      broker_node_group_info[0].storage_info[0].ebs_storage_info[0].provisioned_throughput
     ]
   }
 
