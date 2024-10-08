@@ -251,13 +251,13 @@ variable "public_access_enabled" {
 variable "vpc_connectivity_client_authentication_sasl_iam_enabled" {
   type        = bool
   default     = false
-  description = "(Optional) Enables SASL/IAM authentication for VPC connectivity"
+  description = "Enables SASL/IAM authentication for VPC connectivity"
   nullable    = false
 }
 
 variable "vpc_connectivity_client_authentication_sasl_scram_enabled" {
   type        = bool
   default     = false
-  description = "(Optional) Enables SASL/SCRAM authentication for VPC connectivity."
+  description = "Enables SASL/SCRAM authentication for VPC connectivity."
   nullable    = false
 }
