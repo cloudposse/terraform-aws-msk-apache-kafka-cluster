@@ -145,6 +145,15 @@ resource "aws_msk_cluster" "default" {
     storage_info {
       ebs_storage_info {
         volume_size = var.broker_volume_size
+
+        dynamic "provisioned_throughput" {
+          for_each = var.broker_ebs_provisioned_throughput_enabled ? [1] : []
+
+          content {
+            enabled           = var.broker_ebs_provisioned_throughput_state
+            volume_throughput = var.broker_ebs_provisioned_throughput_value
+          }
+        }
       }
     }
 
