@@ -116,7 +116,7 @@ resource "aws_msk_configuration" "config" {
   count = local.enabled ? 1 : 0
 
   kafka_versions = [var.kafka_version]
-  name           = join("-", [module.this.id, replace(var.kafka_version, ".", "-")])
+  name           = module.this.id
   description    = "Configuration for Amazon Managed Streaming for Kafka"
 
   server_properties = join("\n", [for k in keys(var.properties) : format("%s = %s", k, var.properties[k])])
