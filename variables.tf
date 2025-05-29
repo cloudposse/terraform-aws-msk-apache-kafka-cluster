@@ -31,6 +31,31 @@ variable "broker_volume_size" {
   nullable    = false
 }
 
+variable "broker_ebs_provisioned_throughput_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable broker node EBS provisioned throughput for broker type kafka.m5.4xlarge or larger"
+  nullable    = false
+}
+
+variable "broker_ebs_provisioned_throughput_state" {
+  type        = bool
+  default     = false
+  description = "Enable or disable provisioned throughput of the EBS volumes for the data drive on kafka broker nodes"
+  nullable    = false
+}
+
+variable "broker_ebs_provisioned_throughput_value" {
+  type        = number
+  default     = 250
+  description = "Provisioned throughput value of the EBS volumes for the data drive on kafka broker nodes in MiB per second"
+  validation {
+    condition     = var.broker_ebs_provisioned_throughput_value >= 250
+    error_message = "broker_ebs_provisioned_throughput_value must be minimum 250."
+  }
+  nullable = false
+}
+
 variable "subnet_ids" {
   type        = list(string)
   description = "Subnet IDs for Client Broker"
