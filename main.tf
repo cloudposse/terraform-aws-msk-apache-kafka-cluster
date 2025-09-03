@@ -130,6 +130,19 @@ resource "aws_msk_cluster" "default" {
     ebs_volume_size = var.broker_volume_size
     client_subnets  = var.subnet_ids
     security_groups = var.create_security_group ? concat(var.associated_security_group_ids, [module.broker_security_group.id]) : var.associated_security_group_ids
+
+    dynamic "connectivity_info" {
+      for_each = var.multi_vpc_via_iam_enabled ? [1] : []
+      content {
+        vpc_connectivity {
+          client_authentication {
+            sasl {
+              iam = true
+            }
+          }
+        }
+      }
+    }
   }
 
   configuration_info {
@@ -144,6 +157,7 @@ resource "aws_msk_cluster" "default" {
     }
     encryption_at_rest_kms_key_arn = var.encryption_at_rest_kms_key_arn
   }
+
 
   dynamic "client_authentication" {
     for_each = var.client_tls_auth_enabled || var.client_sasl_scram_enabled || var.client_sasl_iam_enabled ? [1] : []
