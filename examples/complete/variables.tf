@@ -76,9 +76,11 @@ variable "vpc_connectivity" {
   nullable = true
 
   validation {
-    condition = var.vpc_connectivity == null
+    condition = (
+      var.vpc_connectivity == null
       || try(var.vpc_connectivity.sasl_iam_enabled, false)
       || try(var.vpc_connectivity.sasl_scram_enabled, false)
+    )
     error_message = "When vpc_connectivity is set, enable at least one of sasl_iam_enabled or sasl_scram_enabled."
   }
 }
