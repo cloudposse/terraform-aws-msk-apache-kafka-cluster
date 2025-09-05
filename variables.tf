@@ -100,10 +100,18 @@ variable "certificate_authority_arns" {
   nullable    = false
 }
 
-variable "multi_vpc_iam_enabled" {
+variable "vpc_connectivity_client_authentication_sasl_iam_enabled" {
   type        = bool
   default     = false
-  description = "Set `true` to enable cross-VPC SASL/IAM authentication"
+  description = "Enables SASL/IAM authentication for VPC connectivity"
+  nullable    = false
+}
+
+variable "vpc_connectivity_client_authentication_sasl_scram_enabled" {
+  type        = bool
+  default     = false
+  description = "Enables SASL/SCRAM authentication for VPC connectivity."
+  nullable    = false
 }
 
 variable "client_allow_unauthenticated" {
