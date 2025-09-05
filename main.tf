@@ -171,8 +171,6 @@ resource "aws_msk_cluster" "default" {
     }
   }
     }
-
-
   }
 
   configuration_info {
