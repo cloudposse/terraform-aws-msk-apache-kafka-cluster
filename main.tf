@@ -153,14 +153,23 @@ resource "aws_msk_cluster" "default" {
         type = var.public_access_enabled ? "SERVICE_PROVIDED_EIPS" : "DISABLED"
       }
 
-      vpc_connectivity {
-        client_authentication {
-          sasl {
-            iam   = var.vpc_connectivity_client_authentication_sasl_iam_enabled
-            scram = var.vpc_connectivity_client_authentication_sasl_scram_enabled
+  dynamic "vpc_connectivity" {
+    for_each = var.vpc_connectivity == null ? [] : [var.vpc_connectivity]
+    content {
+      client_authentication {
+        dynamic "sasl" {
+          for_each = (
+            try(vpc_connectivity.value.sasl_iam_enabled, null) != null ||
+            try(vpc_connectivity.value.sasl_scram_enabled, null) != null
+          ) ? [1] : []
+          content {
+            iam   = try(vpc_connectivity.value.sasl_iam_enabled, null)
+            scram = try(vpc_connectivity.value.sasl_scram_enabled, null)
           }
         }
       }
+    }
+  }
     }
 
 
