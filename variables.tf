@@ -100,6 +100,12 @@ variable "certificate_authority_arns" {
   nullable    = false
 }
 
+variable "multi_vpc_iam_enabled" {
+  type        = bool
+  default     = false
+  description = "Set `true` to enable cross-VPC SASL/IAM authentication"
+}
+
 variable "client_allow_unauthenticated" {
   type        = bool
   default     = false
@@ -140,12 +146,6 @@ variable "client_tls_auth_enabled" {
   default     = false
   description = "Set `true` to enable the Client TLS Authentication"
   nullable    = false
-}
-
-variable "multi_vpc_iam_enabled" {
-  type        = bool
-  default     = false
-  description = "Set `true` to enable cross-VPC SASL/IAM authentication"
 }
 
 variable "jmx_exporter_enabled" {

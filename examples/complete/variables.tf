@@ -56,6 +56,12 @@ variable "public_access_enabled" {
   nullable    = false
 }
 
+variable "multi_vpc_iam_enabled" {
+  type        = bool
+  default     = false
+  description = "Set `true` to enable cross-VPC SASL/IAM authentication"
+}
+
 variable "client_allow_unauthenticated" {
   type        = bool
   default     = false
