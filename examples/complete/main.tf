@@ -51,8 +51,10 @@ module "kafka" {
   additional_security_group_rules      = var.additional_security_group_rules
   inline_rules_enabled                 = var.inline_rules_enabled
 
-  vpc_connectivity_client_authentication_sasl_iam_enabled   = var.vpc_connectivity_client_authentication_sasl_iam_enabled
-  vpc_connectivity_client_authentication_sasl_scram_enabled = var.vpc_connectivity_client_authentication_sasl_scram_enabled
+vpc_connectivity = {
+  sasl_iam_enabled   = false
+  sasl_scram_enabled = false
+}
 
   client_allow_unauthenticated                 = var.client_allow_unauthenticated
   client_sasl_scram_enabled                    = var.client_sasl_scram_enabled
