@@ -247,3 +247,9 @@ variable "public_access_enabled" {
   description = "Enable public access to MSK cluster (given that all of the requirements are met)"
   nullable    = false
 }
+
+variable "multi_vpc_iam_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable multi-VPC SASL/IAM authentication"
+}

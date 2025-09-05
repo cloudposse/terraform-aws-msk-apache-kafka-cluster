@@ -152,6 +152,16 @@ resource "aws_msk_cluster" "default" {
       public_access {
         type = var.public_access_enabled ? "SERVICE_PROVIDED_EIPS" : "DISABLED"
       }
+      dynamic "vpc_connectivity" {
+        for_each = var.multi_vpc_iam_enabled ? [1] : []
+        content {
+          client_authentication {
+            sasl {
+              iam = true
+            }
+          }
+        }
+      }
     }
   }
 
