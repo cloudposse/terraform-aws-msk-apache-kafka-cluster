@@ -142,6 +142,12 @@ variable "client_tls_auth_enabled" {
   nullable    = false
 }
 
+variable "multi_vpc_iam_enabled" {
+  type        = bool
+  default     = false
+  description = "Set `true` to enable cross-VPC SASL/IAM authentication"
+}
+
 variable "jmx_exporter_enabled" {
   type        = bool
   default     = false
@@ -246,10 +252,4 @@ variable "public_access_enabled" {
   default     = false
   description = "Enable public access to MSK cluster (given that all of the requirements are met)"
   nullable    = false
-}
-
-variable "multi_vpc_iam_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable multi-VPC SASL/IAM authentication"
 }
