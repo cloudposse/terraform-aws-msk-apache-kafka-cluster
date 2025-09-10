@@ -28,7 +28,7 @@ module "subnets" {
 module "kafka" {
   source = "../../"
 
-  zone_id                  = var.zone_id
+  zone_name                = var.zone_name
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = module.this.enabled ? module.subnets.private_subnet_ids : [""]
   kafka_version            = var.kafka_version
