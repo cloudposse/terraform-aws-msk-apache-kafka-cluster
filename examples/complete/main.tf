@@ -25,10 +25,14 @@ module "subnets" {
   context = module.this.context
 }
 
+data "aws_route53_zone" "this" {
+  name = var.zone_name
+}
+
 module "kafka" {
   source = "../../"
 
-  zone_name                = var.zone_name
+  zone_id                  = data.aws_route53_zone.this.zone_id
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = module.this.enabled ? module.subnets.private_subnet_ids : [""]
   kafka_version            = var.kafka_version
