@@ -13,7 +13,7 @@ module "vpc" {
 
 module "subnets" {
   source  = "cloudposse/dynamic-subnets/aws"
-  version = "2.3.0"
+  version = "2.4.2"
 
   availability_zones   = var.availability_zones
   vpc_id               = module.vpc.vpc_id
@@ -25,10 +25,14 @@ module "subnets" {
   context = module.this.context
 }
 
+data "aws_route53_zone" "this" {
+  name = var.zone_name
+}
+
 module "kafka" {
   source = "../../"
 
-  zone_id                  = var.zone_id
+  zone_id                  = data.aws_route53_zone.this.zone_id
   vpc_id                   = module.vpc.vpc_id
   subnet_ids               = module.this.enabled ? module.subnets.private_subnet_ids : [""]
   kafka_version            = var.kafka_version

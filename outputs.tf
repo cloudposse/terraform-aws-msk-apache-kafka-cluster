@@ -94,5 +94,6 @@ output "security_group_arn" {
 }
 
 output "security_group_name" {
-  value = module.security_group.name
+  value       = module.security_group.name
+  description = "The name of the created security group"
 }

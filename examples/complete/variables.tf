@@ -10,9 +10,9 @@ variable "availability_zones" {
   nullable    = false
 }
 
-variable "zone_id" {
+variable "zone_name" {
   type        = string
-  description = "ZoneID for DNS Hostnames of MSK Brokers"
+  description = "Zone name for DNS Hostnames of MSK Brokers"
 }
 
 variable "broker_dns_records_count" {
