@@ -247,3 +247,17 @@ variable "public_access_enabled" {
   description = "Enable public access to MSK cluster (given that all of the requirements are met)"
   nullable    = false
 }
+
+variable "vpc_connectivity_client_authentication_sasl_iam_enabled" {
+  type        = bool
+  default     = false
+  description = "Enables SASL/IAM authentication for VPC connectivity"
+  nullable    = false
+}
+
+variable "vpc_connectivity_client_authentication_sasl_scram_enabled" {
+  type        = bool
+  default     = false
+  description = "Enables SASL/SCRAM authentication for VPC connectivity."
+  nullable    = false
+}
