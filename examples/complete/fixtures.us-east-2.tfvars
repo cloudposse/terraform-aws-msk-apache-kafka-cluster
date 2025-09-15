@@ -19,7 +19,7 @@ broker_instance_type = "kafka.t3.small"
 
 create_security_group = true
 
-zone_id = "Z3SO0TKDDQ0RGG"
+zone_name = "modules.cptest.test-automation.app"
 
 # This variable specifies how many DNS records to create for the broker endpoints in the DNS zone provided in the `zone_id` variable.
 # This corresponds to the total number of broker endpoints created by the module.
