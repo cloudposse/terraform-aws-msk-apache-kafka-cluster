@@ -56,6 +56,34 @@ variable "public_access_enabled" {
   nullable    = false
 }
 
+variable "vpc_connectivity" {
+  description = <<-EOT
+  Optional VPC connectivity settings. Set to null to omit the entire `vpc_connectivity` block.
+  Provide booleans for SASL IAM and/or SCRAM.
+  Example:
+    vpc_connectivity = {
+      sasl_iam_enabled   = true
+      sasl_scram_enabled = true
+    }
+  EOT
+
+  type = object({
+    sasl_iam_enabled   = optional(bool)
+    sasl_scram_enabled = optional(bool)
+  })
+
+  default  = null
+  nullable = true
+
+  validation {
+    condition = (
+      var.vpc_connectivity == null
+      || try(var.vpc_connectivity.sasl_iam_enabled, false)
+      || try(var.vpc_connectivity.sasl_scram_enabled, false)
+    )
+    error_message = "When vpc_connectivity is set, enable at least one of sasl_iam_enabled or sasl_scram_enabled."
+  }
+}
 variable "client_allow_unauthenticated" {
   type        = bool
   default     = false
