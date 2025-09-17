@@ -201,8 +201,7 @@ Here is an example of using this module:
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | Subnet IDs for Client Broker | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).<br/>Neither the tag keys nor the tag values will be modified by this module. | `map(string)` | `{}` | no |
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | ID element \_(Rarely used, not included by default)\_. A customer identifier, indicating who this instance of a resource is for | `string` | `null` | no |
-| <a name="input_vpc_connectivity_client_authentication_sasl_iam_enabled"></a> [vpc\_connectivity\_client\_authentication\_sasl\_iam\_enabled](#input\_vpc\_connectivity\_client\_authentication\_sasl\_iam\_enabled) | Enables SASL/IAM authentication for VPC connectivity | `bool` | `false` | no |
-| <a name="input_vpc_connectivity_client_authentication_sasl_scram_enabled"></a> [vpc\_connectivity\_client\_authentication\_sasl\_scram\_enabled](#input\_vpc\_connectivity\_client\_authentication\_sasl\_scram\_enabled) | Enables SASL/SCRAM authentication for VPC connectivity. | `bool` | `false` | no |
+| <a name="input_vpc_connectivity"></a> [vpc\_connectivity](#input\_vpc\_connectivity) | Optional VPC connectivity settings. Set to null to omit the entire `vpc_connectivity` block.<br/>Provide booleans for SASL IAM and/or SCRAM.<br/>Example:<br/>  vpc\_connectivity = {<br/>    sasl\_iam\_enabled   = true<br/>    sasl\_scram\_enabled = true<br/>  } | <pre>object({<br/>    sasl_iam_enabled   = optional(bool)<br/>    sasl_scram_enabled = optional(bool)<br/>  })</pre> | `null` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The ID of the VPC where the Security Group will be created. | `string` | n/a | yes |
 | <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | Route53 DNS Zone ID for MSK broker hostnames | `string` | `null` | no |
 
@@ -296,7 +295,8 @@ For additional context, refer to some of these links.
 > - **Customer Workshops.** Engage with our team in weekly workshops, gaining insights and strategies to continuously improve and innovate.
 >
 > <a href="https://cpco.io/commercial-support?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-msk-apache-kafka-cluster&utm_content=commercial_support"><img alt="Request Quote" src="https://img.shields.io/badge/request%20quote-success.svg?style=for-the-badge"/></a>
-> </details>
+> 
+</details>
 
 ## ✨ Contributing
 
