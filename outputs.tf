@@ -48,6 +48,21 @@ output "bootstrap_brokers_public_sasl_iam" {
   description = "Comma separated list of one or more DNS names (or IP addresses) and SASL IAM port pairs for public access to the Kafka cluster using SASL/IAM"
 }
 
+output "bootstrap_brokers_vpc_connectivity_sasl_iam" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers_vpc_connectivity_sasl_iam)
+  description = "Comma separated list of one or more DNS names (or IP addresses) and SASL IAM port pairs for access to the Kafka cluster using Multi-VPC SASL/IAM"
+}
+
+output "bootstrap_brokers_vpc_connectivity_sasl_scram" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers_vpc_connectivity_sasl_scram)
+  description = "Comma separated list of one or more DNS names (or IP addresses) and SASL SCRAM port pairs for access to the Kafka cluster using Multi-VPC SASL/SCRAM"
+}
+
+output "bootstrap_brokers_vpc_connectivity_tls" {
+  value       = one(aws_msk_cluster.default[*].bootstrap_brokers_vpc_connectivity_tls)
+  description = "Comma separated list of one or more DNS names (or IP addresses) and TLS port pairs for access to the Kafka cluster using Multi-VPC TLS"
+}
+
 output "zookeeper_connect_string" {
   value       = one(aws_msk_cluster.default[*].zookeeper_connect_string)
   description = "Comma separated list of one or more hostname:port pairs to connect to the Apache Zookeeper cluster"
