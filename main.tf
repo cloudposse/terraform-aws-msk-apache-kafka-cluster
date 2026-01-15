@@ -239,6 +239,12 @@ resource "aws_msk_cluster" "default" {
     ]
   }
 
+  timeouts {
+    create = lookup(var.tf_operation_timeouts, "create", "2h")
+    update = lookup(var.tf_operation_timeouts, "update", "2h")
+    delete = lookup(var.tf_operation_timeouts, "delete", "2h")
+  }
+
   tags = module.this.tags
 }
 

@@ -275,3 +275,9 @@ variable "public_access_enabled" {
   description = "Enable public access to MSK cluster (given that all of the requirements are met)"
   nullable    = false
 }
+
+variable "tf_operation_timeouts" {
+  type        = map(string)
+  default     = {}
+  description = "Optional MSK cluster operation timeouts. Keys: 'create', 'update', 'delete'. Durations like '3h', '2h30m'. Unset keys use provider defaults."
+}
